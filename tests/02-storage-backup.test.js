@@ -1,5 +1,5 @@
 const fs=require('fs'), {JSDOM}=require('jsdom');
-const html=fs.readFileSync('ielts.html','utf8');
+const html=fs.readFileSync(require('path').join(__dirname, '..', 'ielts.html'),'utf8');
 let store={}, failNext=false;
 const dom=new JSDOM(html,{runScripts:'dangerously',url:'https://example.com/',pretendToBeVisual:true,
  beforeParse(win){

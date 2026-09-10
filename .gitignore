@@ -29,3 +29,6 @@ Thumbs.db
 # === 其他 ===
 *.log
 *.zip
+*.local
+*.bak-*
+*.old-backup

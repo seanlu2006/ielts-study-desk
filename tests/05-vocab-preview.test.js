@@ -3,7 +3,7 @@
    直接驅動 VOCAB_PREVIEW / ACTIONS，不必 mock Gemini（那條錯誤路徑 test3 已涵蓋）。 */
 const fs = require('fs');
 const { JSDOM } = require('jsdom');
-const html = fs.readFileSync('ielts.html', 'utf8');
+const html = fs.readFileSync(require('path').join(__dirname, '..', 'ielts.html'), 'utf8');
 
 const seedState = {
   'vocab-library': [

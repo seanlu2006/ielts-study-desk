@@ -2,7 +2,7 @@
    延續 test.js 的 jsdom 驅動風格，mock localStorage / speechSynthesis，不打真 API。 */
 const fs = require('fs');
 const { JSDOM } = require('jsdom');
-const html = fs.readFileSync('ielts.html', 'utf8');
+const html = fs.readFileSync(require('path').join(__dirname, '..', 'ielts.html'), 'utf8');
 
 const seedState = {
   'vocab-library': [

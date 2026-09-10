@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { JSDOM } = require('jsdom');
 
-const html = fs.readFileSync('ielts.html', 'utf8');
+const html = fs.readFileSync(require('path').join(__dirname, '..', 'ielts.html'), 'utf8');
 
 // Seed localStorage with legacy-shaped data (no ids, no SRS fields) to test migration,
 // and include a word with an apostrophe — the case that broke the original build.

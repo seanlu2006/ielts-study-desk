@@ -1,9 +1,9 @@
 {
   "name": "ielts-study-desk",
   "private": true,
-  "description": "測試用。網站本身無相依，jsdom 只給 node test*.js 用",
+  "description": "建置與測試用。網站本身無 runtime 相依，jsdom 只給 tests/ 用",
   "scripts": {
-    "test": "node test.js && node test2.js && node test3.js && node test4.js && node test5.js",
+    "test": "node tests/01-core.test.js && node tests/02-storage-backup.test.js && node tests/03-gemini-models.test.js && node tests/04-review-dashboard.test.js && node tests/05-vocab-preview.test.js",
     "build": "node build.mjs",
     "dev": "node build.mjs && wrangler pages dev dist",
     "deploy": "node build.mjs && wrangler pages deploy dist"

@@ -1,5 +1,5 @@
 const fs=require('fs'), {JSDOM}=require('jsdom');
-const html=fs.readFileSync('ielts.html','utf8');
+const html=fs.readFileSync(require('path').join(__dirname, '..', 'ielts.html'),'utf8');
 
 const MODELS={models:[
  {name:'models/gemini-3.5-flash',supportedGenerationMethods:['generateContent']},
