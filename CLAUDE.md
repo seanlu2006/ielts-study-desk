@@ -12,13 +12,16 @@
 所以「無後端」這條已不再絕對——是刻意的取捨，原因見下方「為什麼加後端」。
 
 檔案：
-- `ielts.html`（約 2000 行，含 CSS 與 JS）＝ 前端全部
+- `ielts.html`（約 2200 行，含 CSS 與 JS）＝ 前端全部
 - `functions/api/*.js` ＝ 後端 API（register / login / progress + 共用 `_lib.js`）
 - `schema.sql`、`wrangler.toml` ＝ D1 建表與部署設定
+- `build.mjs` ＝ 產生 `dist/`（`ielts.html` → `index.html` + `functions/`）
+- `tests/*.test.js` ＝ jsdom 測試
 - `DEPLOY-backend.md` ＝ 給非後端背景的人的逐步部署手冊
 
-部署：`cp ielts.html index.html && wrangler pages deploy .`（細節見 DEPLOY-backend.md）。
-仍沿用「首頁要叫 index.html」的規則，只是改用複製而非改名，保留 `ielts.html` 方便改。
+部署：`npm run deploy`（＝ `node build.mjs && wrangler pages deploy dist`，細節見 DEPLOY-backend.md）。
+仍沿用「首頁要叫 index.html」的規則，但改名這步交給 `build.mjs` 做，根目錄保留 `ielts.html` 方便改。
+不要直接 `wrangler pages deploy .`——會把 `node_modules/` 和 `tests/` 一起上傳。
 
 ### 為什麼加後端
 原本只有 localStorage + JSONBin 同步，兩個痛點：iOS Safari 七天沒開會清掉 localStorage；
@@ -40,10 +43,10 @@ JSONBin 是 last-write-wins 且用帳號主金鑰，不安全。使用者預期�
 ## 檔案結構（行號為改動前的參考，會位移）
 
 ```
-1-9      <head> + 字型
-9-206    <style>：全部 CSS。設計 token 在 :root
-207-596  <body>：sidebar + 七個 .module
-597-     <script>：全部 JS
+1-8      <head> + 字型
+9-266    <style>：全部 CSS。設計 token 在 :root
+267-666  <body>：sidebar + 七個 .module
+667-     <script>：全部 JS
 ```
 
 JS 內部區塊順序：
@@ -51,7 +54,7 @@ JS 內部區塊順序：
 ```
 小工具 (escapeHtml / todayStr / uid / setStatus)
 儲存層 (APP_STATE / storeGet / storeSet)
-雲端同步 (JSONBin，選用)
+雲端進度 (Cloudflare D1 後端，選用)
 Gemini (模型探索 / callGemini / callGeminiJSON)
 事件委派 (ACTIONS 表)
 導覽
@@ -148,26 +151,27 @@ Gemini (模型探索 / callGemini / callGeminiJSON)
 
 ## 測試
 
-`test.js` … `test5.js`，用 jsdom 驅動，共 **94** 個檢查。
+`tests/*.test.js` 五支，用 jsdom 把 `ielts.html` 整頁跑起來，共 **94** 個檢查。
 
 ```bash
-npm install jsdom
-npm test   # 依序跑 test.js ~ test5.js
+npm install
+npm test   # 依編號依序跑 tests/01 ~ tests/05
 ```
 
-- `test.js`（29）：資料遷移、XSS、撇號單字、複習升降盒、佇列終止、考題判分、計畫表編輯
-- `test2.js`（8）：localStorage 配額爆掉的警告、備份匯出匯入 round-trip
-- `test3.js`（16）：模型探索與過濾、退役模型自動替換、429/404 錯誤分類
-- `test4.js`（22）：反向測驗（拼字對錯、翻面自評、升盒）、學習儀表板、連續天數的連續/中斷/延續邏輯
-- `test5.js`（19）：單字庫查詢/加入拆兩步（查詢只預覽、加入才寫入、捨棄、重複字防呆）
+- `tests/01-core.test.js`（29）：資料遷移、XSS、撇號單字、複習升降盒、佇列終止、考題判分、計畫表編輯
+- `tests/02-storage-backup.test.js`（8）：localStorage 配額爆掉的警告、備份匯出匯入 round-trip
+- `tests/03-gemini-models.test.js`（16）：模型探索與過濾、退役模型自動替換、429/404 錯誤分類
+- `tests/04-review-dashboard.test.js`（22）：反向測驗（拼字對錯、翻面自評、升盒）、學習儀表板、連續天數的連續/中斷/延續邏輯
+- `tests/05-vocab-preview.test.js`（19）：單字庫查詢/加入拆兩步（查詢只預覽、加入才寫入、捨棄、重複字防呆）
 
-**改完一定要五個都跑過（`npm test`）。** 測試會 mock `fetch`、`localStorage`、`speechSynthesis`，不會真的打 API。
+**改完一定要五支都跑過（`npm test`）。** 測試會 mock `fetch`、`localStorage`、`speechSynthesis`，不會真的打 API。
+每支都用 `__dirname` 定位 `ielts.html`，所以從任何目錄 `node tests/xx.test.js` 都跑得起來。
 
-> ⚠️ 前任交接說「53 全過」其實是假綠燈：jsdom 24 沒實作 `File.text()`，`test2.js` 的匯入 4 條一直 FAIL。
-> 已在 `test2.js` 的 `beforeParse` 補上 `FileReader` polyfill（只動測試、沒動產品），現在匯入 round-trip 真的測得到。
+> ⚠️ 前任交接說「53 全過」其實是假綠燈：jsdom 24 沒實作 `File.text()`，`02-storage-backup` 的匯入 4 條一直 FAIL。
+> 已在該檔的 `beforeParse` 補上 `FileReader` polyfill（只動測試、沒動產品），現在匯入 round-trip 真的測得到。
 
 後端 `functions/*` 目前**沒有自動化測試**（需要 Cloudflare Workers + D1 執行環境，jsdom 測不到）。
-本機驗證請用 `wrangler pages dev .` 手動走註冊/登入/同步/衝突。這是已知缺口，之後值得補 integration test。
+本機驗證請用 `npm run dev` 手動走註冊/登入/同步/衝突。這是已知缺口，之後值得補 integration test。
 
 新增功能請一併補測試，特別是任何碰到上面十二條約束的地方。
 
