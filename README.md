@@ -51,25 +51,26 @@
 
 ## 本機開發
 
-前端是單一 HTML 檔，直接用瀏覽器開 `ielts.html` 就能操作大部分功能（不需要 build）。
-
-需要動到後端或部署時：
+前端是單一 HTML 檔（`ielts.html`），不需要打包步驟；`npm run build` 只是把它和 `functions/` 整理成 Cloudflare Pages 要的 `dist/`。
 
 ```bash
 # 安裝依賴
 npm install
 
-# 建立本機環境變數（Pages Functions / D1 用）
-cp .dev.vars.example .dev.vars
+# 建立本機 D1 測試庫
+wrangler d1 execute ielts-progress --file=./schema.sql --local
 
-# 跑測試
+# 跑測試（前端邏輯，test.js ~ test5.js）
 npm test
+
+# 本機起完整環境：前端 + Pages Functions + 本機 D1
+npm run dev
 
 # 建置並部署到 Cloudflare Pages
 npm run deploy
 ```
 
-部署細節見 `DEPLOY-backend.md`。
+首次部署（建 D1、灌 schema、設 `TOKEN_SECRET`）的完整步驟見 `DEPLOY-backend.md`。
 
 ### 必要設定
 
