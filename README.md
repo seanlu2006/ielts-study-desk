@@ -4,6 +4,16 @@
 
 **線上版：https://ielts-study-desk.pages.dev** — 不用註冊就能開始用，資料存在你自己的瀏覽器。
 
+![單字庫](docs/screenshot-vocab.png)
+
+查過的單字連同音標、搭配詞、例句一起存進單字庫，並自動排進複習佇列。
+
+![今日複習](docs/screenshot-review.png)
+
+複習頁把 Leitner 五盒的分布攤開來：第 1 盒每天複習，往上依序 2、4、7、14 天，答錯一律退回第 1 盒。
+
+<sub>兩張截圖皆為示範資料。</sub>
+
 ---
 
 ## 為什麼做這個
