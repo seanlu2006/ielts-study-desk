@@ -1,7 +1,7 @@
 # 部署手冊 — Cloudflare Pages + D1 進度後端
 
 > ✅ **已於 2026-08-03 首次部署完成。** 正式站：https://ielts-study-desk.pages.dev
-> 帳號 seanlu2006@gmail.com｜Pages 專案 `ielts-study-desk`｜D1 `ielts-progress`（id `e9fc078d-dbf4-48eb-b428-db26ea4750d0`）｜`TOKEN_SECRET` 已設。
+> Pages 專案 `ielts-study-desk`｜D1 `ielts-progress`（id `e9fc078d-dbf4-48eb-b428-db26ea4750d0`）｜`TOKEN_SECRET` 已設。
 > **之後改 code 只要跑 `npm run deploy`**（見最下方「之後每次更新」）。下面的步驟一～五是當初怎麼建的紀錄，重建或換帳號時才需要。
 
 給你（第一次弄後端）用的逐步流程。整套免費，不用信用卡。
@@ -31,7 +31,8 @@ wrangler d1 create ielts-progress
 ```
 
 跑完它會印出一段設定，裡面有 `database_id = "xxxxxxxx-...."`。
-**把那個 id 複製起來**，貼進 `wrangler.toml` 裡 `REPLACE_WITH_YOUR_D1_DATABASE_ID` 的位置。
+**把那個 id 複製起來**，覆蓋 `wrangler.toml` 裡 `[[d1_databases]]` 區塊現有的 `database_id`。
+（這個 repo 裡填的是我自己那顆 D1 的 id，你要自己部署一份就得換成你的。）
 
 ## 步驟二：建資料表
 
