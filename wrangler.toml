@@ -1,0 +1,17 @@
+name = "ielts-study-desk"
+compatibility_date = "2026-01-01"
+
+# 只部署乾淨的 dist/（由 build.mjs 產生），避免 node_modules / 測試檔被一起上傳。
+# dist/ 裡是 index.html + functions/。產生方式： npm run build
+pages_build_output_dir = "dist"
+
+# D1 資料庫綁定。程式裡用 env.DB 存取。
+# database_id 要換成你自己 `wrangler d1 create` 之後拿到的 ID。
+[[d1_databases]]
+binding = "DB"
+database_name = "ielts-progress"
+database_id = "e9fc078d-dbf4-48eb-b428-db26ea4750d0"
+
+# 注意：TOKEN_SECRET（簽 token 用的密鑰）不寫在這裡。
+# 密鑰要用指令設定，才不會被 commit 進版本庫：
+#   wrangler pages secret put TOKEN_SECRET

@@ -1,0 +1,2231 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>考場筆記 · IELTS 個人讀書站</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #E7E9E1;
+    --paper-line: #D3D6C9;
+    --card: #FCFCFA;
+    --ink: #21262B;
+    --ink-soft: #5B6259;
+    --teal: #1F6F78;
+    --teal-dark: #17565D;
+    --brick: #B23A2E;
+    --sage: #4C7A5D;
+    --amber: #C98A2D;
+    --radius: 10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      repeating-linear-gradient(180deg, transparent, transparent 27px, var(--paper-line) 28px),
+      var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    min-height:100vh;
+  }
+  .app{display:flex; min-height:100vh;}
+  /* Sidebar */
+  .sidebar{
+    width:230px; flex-shrink:0;
+    background:var(--ink); color:#EDEEE9;
+    padding:28px 18px; position:sticky; top:0; height:100vh;
+    display:flex; flex-direction:column; gap:22px;
+  }
+  .brand{font-family:'Fraunces', serif; font-size:22px; font-weight:700; line-height:1.25;}
+  .brand small{display:block; font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.08em; color:#9AA79C; font-weight:400; margin-top:4px;}
+  .nav{display:flex; flex-direction:column; gap:4px; margin-top:6px;}
+  .nav button{
+    all:unset; cursor:pointer; display:flex; align-items:baseline; gap:10px;
+    padding:10px 10px; border-radius:8px; font-size:14px; color:#D7DAD2;
+  }
+  .nav button .num{font-family:'IBM Plex Mono', monospace; font-size:11px; color:#7C8A7E;}
+  .nav button:hover{background:#2B3138;}
+  .nav button.active{background:var(--teal); color:#fff;}
+  .nav button.active .num{color:#CFEDEF;}
+  .sidebar-foot{margin-top:auto; font-size:11px; color:#7C8A7E; font-family:'IBM Plex Mono', monospace; line-height:1.6;}
+
+  .main{flex:1; padding:36px 44px; max-width:980px;}
+  .module{display:none;}
+  .module.active{display:block; animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  .module-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; gap:20px;}
+  .module-title{font-family:'Fraunces', serif; font-size:28px; font-weight:600;}
+  .module-sub{color:var(--ink-soft); font-size:13.5px; margin-top:4px;}
+
+  .stamp{
+    width:82px; height:82px; border-radius:50%;
+    border:2.5px solid var(--teal); color:var(--teal);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono', monospace; transform:rotate(-6deg);
+    flex-shrink:0; background:rgba(31,111,120,0.04);
+  }
+  .stamp .n{font-size:20px; font-weight:600; line-height:1;}
+  .stamp .l{font-size:8.5px; letter-spacing:.04em; margin-top:2px; text-align:center; padding:0 4px;}
+  .stamp.brick{border-color:var(--brick); color:var(--brick); background:rgba(178,58,46,0.04);}
+  .stamp.sage{border-color:var(--sage); color:var(--sage); background:rgba(76,122,93,0.04);}
+
+  .card{
+    background:var(--card); border:1px solid var(--paper-line); border-radius:var(--radius);
+    padding:20px 22px; margin-bottom:16px;
+  }
+  .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
+  label{font-size:12.5px; color:var(--ink-soft); display:block; margin-bottom:5px;}
+  input[type=text], input[type=number], input[type=date], input[type=password], select, textarea{
+    font-family:'IBM Plex Sans', sans-serif; font-size:14px; color:var(--ink);
+    background:#fff; border:1px solid var(--paper-line); border-radius:7px; padding:9px 11px;
+    width:100%;
+  }
+  textarea{resize:vertical; min-height:90px;}
+  .field{flex:1; min-width:160px;}
+  button.btn{
+    all:unset; cursor:pointer; background:var(--teal); color:#fff; font-weight:500;
+    padding:10px 18px; border-radius:7px; font-size:13.5px; white-space:nowrap;
+  }
+  button.btn:hover{background:var(--teal-dark);}
+  button.btn.ghost{background:transparent; border:1px solid var(--teal); color:var(--teal);}
+  button.btn.ghost:hover{background:rgba(31,111,120,0.08);}
+  button.btn.danger{background:transparent; border:1px solid var(--brick); color:var(--brick);}
+  button.btn.danger:hover{background:rgba(178,58,46,0.08);}
+  button.btn:disabled{opacity:.5; cursor:not-allowed;}
+  button.icon-btn{all:unset; cursor:pointer; color:var(--ink-soft); font-size:15px; padding:4px 7px; border-radius:6px;}
+  button.icon-btn:hover{background:var(--paper-line);}
+
+  .tag{
+    display:inline-block; font-family:'IBM Plex Mono', monospace; font-size:10.5px;
+    padding:2px 8px; border-radius:20px; background:var(--paper); border:1px solid var(--paper-line); color:var(--ink-soft);
+    margin-right:5px;
+  }
+  .tag.skill-writing{border-color:var(--brick); color:var(--brick);}
+  .tag.skill-reading{border-color:var(--teal); color:var(--teal);}
+  .tag.skill-listening{border-color:var(--amber); color:var(--amber);}
+  .tag.skill-speaking{border-color:var(--sage); color:var(--sage);}
+
+  .word-word{font-family:'Fraunces', serif; font-size:20px; font-weight:600;}
+  .word-ipa{font-family:'IBM Plex Mono', monospace; color:var(--ink-soft); font-size:13px;}
+  .divider{height:1px; background:var(--paper-line); margin:14px 0;}
+  .muted{color:var(--ink-soft); font-size:13px;}
+  .empty{
+    border:1.5px dashed var(--paper-line); border-radius:var(--radius); padding:32px;
+    text-align:center; color:var(--ink-soft); font-size:13.5px;
+  }
+  .status{font-size:12.5px; padding:8px 12px; border-radius:7px; margin-bottom:12px;}
+  .status.err{background:rgba(178,58,46,0.08); color:var(--brick);}
+  .status.ok{background:rgba(76,122,93,0.08); color:var(--sage);}
+  .status.info{background:rgba(31,111,120,0.08); color:var(--teal-dark);}
+  .spin{display:inline-block; width:12px; height:12px; border-radius:50%; border:2px solid var(--paper-line); border-top-color:var(--teal); animation:spin .7s linear infinite; vertical-align:-2px; margin-right:6px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .bar-row{display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:13px;}
+  .bar-label{width:170px; flex-shrink:0; color:var(--ink-soft);}
+  .bar-track{flex:1; height:9px; background:var(--paper); border-radius:5px; overflow:hidden;}
+  .bar-fill{height:100%; background:var(--brick); border-radius:5px;}
+  .bar-count{width:26px; text-align:right; font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--ink-soft);}
+
+  table.plan{width:100%; border-collapse:collapse; font-size:13.5px;}
+  table.plan th{text-align:left; font-size:11.5px; color:var(--ink-soft); font-weight:500; padding:6px 8px; border-bottom:1px solid var(--paper-line);}
+  table.plan td{padding:7px 8px; border-bottom:1px solid var(--paper-line); vertical-align:top;}
+  table.plan input[type=text]{border:none; background:transparent; padding:2px 4px;}
+  table.plan input[type=text]:focus{background:#fff; border:1px solid var(--paper-line); border-radius:5px;}
+
+  .quiz-item{border:1px solid var(--paper-line); border-radius:9px; padding:16px; margin-bottom:12px; background:#fff;}
+  .quiz-opt{display:flex; align-items:center; gap:8px; padding:6px 0; font-size:13.5px;}
+  .quiz-opt.correct{color:var(--sage); font-weight:600;}
+  .quiz-opt.wrong{color:var(--brick); font-weight:600;}
+
+  .band-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:14px;}
+  .band-box{border:1px solid var(--paper-line); border-radius:9px; padding:12px; text-align:center; background:#fff;}
+  .band-box .b{font-family:'IBM Plex Mono', monospace; font-size:22px; font-weight:600; color:var(--teal);}
+  .band-box .t{font-size:11px; color:var(--ink-soft); margin-top:2px;}
+  .model-essay{white-space:pre-wrap; font-size:13.5px; line-height:1.7; background:#fff; border:1px solid var(--paper-line); border-radius:9px; padding:16px;}
+
+  ::placeholder{color:#AEB3A8;}
+  a{color:var(--teal);}
+  @media (max-width:800px){
+    .app{flex-direction:column;}
+    .sidebar{width:100%; height:auto; position:relative; flex-direction:row; overflow-x:auto;}
+    .nav{flex-direction:row;}
+    .main{padding:24px 18px;}
+    .band-grid{grid-template-columns:repeat(2,1fr);}
+  }
+
+  /* ---- 新增：複習系統 ---- */
+  .review-stage{
+    background:var(--card); border:1px solid var(--paper-line); border-radius:var(--radius);
+    padding:38px 28px; text-align:center; margin-bottom:16px;
+  }
+  .review-word{font-family:'Fraunces', serif; font-size:40px; font-weight:600; line-height:1.15;}
+  .review-ipa{font-family:'IBM Plex Mono', monospace; color:var(--ink-soft); font-size:14px; margin-top:6px;}
+  .review-back{
+    text-align:left; margin:22px auto 0; max-width:520px; font-size:13.5px; line-height:1.75;
+    border-top:1px solid var(--paper-line); padding-top:18px;
+  }
+  .review-actions{display:flex; gap:10px; justify-content:center; margin-top:24px; flex-wrap:wrap;}
+  .box-pips{display:flex; gap:4px; justify-content:center; margin-top:14px;}
+  .box-pips i{
+    width:22px; height:4px; border-radius:2px; background:var(--paper-line); display:block;
+  }
+  .box-pips i.on{background:var(--teal);}
+  .queue-meta{
+    display:flex; gap:22px; justify-content:center; font-family:'IBM Plex Mono', monospace;
+    font-size:11px; color:var(--ink-soft); letter-spacing:.04em; margin-bottom:16px;
+  }
+  .queue-meta b{color:var(--ink); font-weight:600;}
+  .box-dist{display:grid; grid-template-columns:repeat(5,1fr); gap:8px;}
+  .box-cell{border:1px solid var(--paper-line); border-radius:8px; padding:10px 6px; text-align:center; background:#fff;}
+  .box-cell .c{font-family:'IBM Plex Mono', monospace; font-size:19px; font-weight:600; color:var(--teal);}
+  .box-cell .t{font-size:10.5px; color:var(--ink-soft); margin-top:2px;}
+  .due-badge{
+    display:inline-block; font-family:'IBM Plex Mono', monospace; font-size:10.5px;
+    padding:2px 8px; border-radius:20px; background:rgba(178,58,46,0.1); color:var(--brick); margin-left:6px;
+  }
+  .audio-box{
+    background:#fff; border:1px solid var(--paper-line); border-radius:9px; padding:14px 16px; margin-bottom:12px;
+  }
+  .warn-banner{
+    background:rgba(201,138,45,0.12); border:1px solid var(--amber); color:#7A521A;
+    padding:10px 14px; border-radius:8px; font-size:12.5px; margin-bottom:14px; line-height:1.6;
+  }
+  .warn-banner b{color:#5E3F12;}
+  :focus-visible{outline:2px solid var(--teal); outline-offset:2px;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+  @media (max-width:800px){
+    .box-dist{grid-template-columns:repeat(5,1fr); gap:5px;}
+    .review-word{font-size:32px;}
+    .stat-row{grid-template-columns:repeat(2,1fr) !important;}
+  }
+
+  /* ---- 新增：學習儀表板（連續天數 + 統計） ---- */
+  .stat-row{display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
+  .stat-tile{
+    border:1px solid var(--paper-line); border-radius:9px; padding:14px 12px; background:#fff;
+    display:flex; flex-direction:column; gap:3px;
+  }
+  .stat-tile .v{font-family:'IBM Plex Mono', monospace; font-size:24px; font-weight:600; color:var(--ink); line-height:1;}
+  .stat-tile .k{font-size:11px; color:var(--ink-soft);}
+  .stat-tile.flame .v{color:var(--amber);}
+  .stat-tile.flame{background:linear-gradient(180deg, rgba(201,138,45,0.10), #fff);}
+  .stat-tile.mastered .v{color:var(--sage);}
+  .stat-tile.due .v{color:var(--brick);}
+  /* 近 7 天活動小格 */
+  .week-dots{display:flex; gap:5px; margin-top:12px; align-items:center;}
+  .week-dots .d{
+    width:26px; height:26px; border-radius:6px; background:var(--paper); border:1px solid var(--paper-line);
+    display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--ink-soft);
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .week-dots .d.on{background:var(--sage); border-color:var(--sage); color:#fff;}
+  .week-dots .d.today{box-shadow:0 0 0 2px var(--teal);}
+
+  /* ---- 新增：複習模式切換（認得 / 產出） ---- */
+  .seg{display:inline-flex; border:1px solid var(--paper-line); border-radius:8px; overflow:hidden; margin-bottom:16px; background:#fff;}
+  .seg button{
+    all:unset; cursor:pointer; padding:8px 16px; font-size:13px; color:var(--ink-soft);
+    display:flex; align-items:center; gap:6px;
+  }
+  .seg button.on{background:var(--teal); color:#fff;}
+  .seg button:not(.on):hover{background:var(--paper);}
+
+  /* 反向測驗（拼字）輸入與對錯回饋 */
+  .type-prompt{font-family:'Fraunces', serif; font-size:30px; font-weight:600; line-height:1.2;}
+  .type-hint{color:var(--ink-soft); font-size:13px; margin-top:6px;}
+  .type-input{max-width:340px; margin:20px auto 0; text-align:center; font-size:18px !important;
+    font-family:'IBM Plex Mono', monospace !important; letter-spacing:.02em;}
+  .type-result{margin-top:16px; font-family:'IBM Plex Mono', monospace; font-size:15px;}
+  .type-result.hit{color:var(--sage);}
+  .type-result.miss{color:var(--brick);}
+  .type-answer{font-family:'Fraunces', serif; font-size:34px; font-weight:600; margin-top:4px;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div class="brand">考場筆記<small>PERSONAL IELTS DESK</small></div>
+    <div class="nav" id="nav">
+      <button data-m="vocab" class="active"><span class="num">01</span> 單字庫</button>
+      <button data-m="review"><span class="num">02</span> 今日複習 <span id="nav-due-count"></span></button>
+      <button data-m="quiz"><span class="num">03</span> 擬真考題</button>
+      <button data-m="errors"><span class="num">04</span> 錯誤筆記本</button>
+      <button data-m="writing"><span class="num">05</span> 寫作批改</button>
+      <button data-m="schedule"><span class="num">06</span> 讀書計畫</button>
+      <button data-m="settings"><span class="num">07</span> 設定</button>
+    </div>
+    <div class="sidebar-foot">資料存在這台裝置的瀏覽器<br/>記得定期到設定頁備份</div>
+  </div>
+
+  <div class="main">
+    <div id="global-warning"></div>
+
+    <!-- VOCAB -->
+    <div class="module active" id="m-vocab">
+      <div class="module-head">
+        <div>
+          <div class="module-title">個人電子單字庫</div>
+          <div class="module-sub">先查詢看 AI 整理的結果，確認後再按「加入單字庫」存起來並排進複習佇列</div>
+        </div>
+        <div class="stamp" id="vocab-stamp"><div class="n">0</div><div class="l">WORDS</div></div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div class="field" style="flex:2;">
+            <label>輸入想查詢的英文單字</label>
+            <input type="text" id="vocab-input" placeholder="例如：mitigate" />
+          </div>
+          <div style="align-self:flex-end;">
+            <button class="btn" id="vocab-search-btn">查詢</button>
+          </div>
+        </div>
+        <div id="vocab-status"></div>
+      </div>
+
+      <div id="vocab-preview"></div>
+
+      <div class="card" id="vocab-filter-card" style="display:none;">
+        <div class="row">
+          <div class="field" style="flex:2;">
+            <label>搜尋已收錄的單字</label>
+            <input type="text" id="vocab-filter" placeholder="輸入關鍵字過濾" />
+          </div>
+          <div class="field" style="max-width:170px;">
+            <label>排序</label>
+            <select id="vocab-sort">
+              <option value="new">最新加入</option>
+              <option value="alpha">字母順序</option>
+              <option value="weak">最不熟（盒子低）</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="vocab-list"></div>
+    </div>
+
+    <!-- REVIEW (Leitner) -->
+    <div class="module" id="m-review">
+      <div class="module-head">
+        <div>
+          <div class="module-title">今日複習</div>
+          <div class="module-sub">Leitner 五盒間隔重複：答對往上一盒、答錯回第一盒</div>
+        </div>
+        <div class="stamp sage" id="review-stamp"><div class="n">0</div><div class="l">DUE TODAY</div></div>
+      </div>
+
+      <div class="card">
+        <div class="module-sub" style="font-weight:500; color:var(--ink); margin-bottom:12px;">學習狀態</div>
+        <div class="stat-row" id="review-stats"></div>
+        <div class="week-dots" id="week-dots"></div>
+      </div>
+
+      <div class="card">
+        <div class="module-sub" style="font-weight:500; color:var(--ink); margin-bottom:12px;">熟練度分布</div>
+        <div class="box-dist" id="box-dist"></div>
+        <div class="muted" style="margin-top:10px;">
+          第 1 盒每天複習，往上依序為 2 天、4 天、7 天、14 天。答錯一律退回第 1 盒。
+        </div>
+      </div>
+
+      <div class="seg" id="review-mode-seg">
+        <button data-act="review-mode" data-mode="recognition" class="on">看英文 → 想中文</button>
+        <button data-act="review-mode" data-mode="production">看中文 → 拼英文</button>
+      </div>
+
+      <div id="review-area"></div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="module" id="m-quiz">
+      <div class="module-head">
+        <div>
+          <div class="module-title">擬雅思考題產生器</div>
+          <div class="module-sub">依你的單字庫與弱項，生成模擬雅思試題</div>
+        </div>
+        <div class="stamp sage" id="quiz-stamp"><div class="n">–</div><div class="l">ACCURACY</div></div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div class="field">
+            <label>技能領域</label>
+            <select id="quiz-skill">
+              <option value="reading">閱讀 Reading</option>
+              <option value="writing">寫作 Writing</option>
+              <option value="listening">聽力 Listening</option>
+              <option value="speaking">口說 Speaking</option>
+              <option value="vocabulary">單字應用 Vocabulary</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>子題型 / 聚焦重點（可留白由 AI 決定）</label>
+            <input type="text" id="quiz-subtype" placeholder="例如：True/False/Not Given、連接詞使用" />
+          </div>
+          <div class="field" style="max-width:110px;">
+            <label>題數</label>
+            <input type="number" id="quiz-count" value="5" min="1" max="10" />
+          </div>
+          <div style="align-self:flex-end;">
+            <button class="btn" id="quiz-gen-btn">生成考題</button>
+          </div>
+        </div>
+        <div class="row" style="margin-top:10px;">
+          <label style="display:flex; align-items:center; gap:6px; margin:0;">
+            <input type="checkbox" id="quiz-use-weak" style="width:auto;" checked /> 依錯誤筆記本的弱項加重出題
+          </label>
+        </div>
+        <div class="muted" style="margin-top:8px;">
+          選「聽力」時，題目文字不會直接顯示，改由瀏覽器語音朗讀，作答後才公開逐字稿。
+        </div>
+        <div id="quiz-status"></div>
+      </div>
+
+      <div id="quiz-area"></div>
+    </div>
+
+    <!-- ERRORS -->
+    <div class="module" id="m-errors">
+      <div class="module-head">
+        <div>
+          <div class="module-title">錯誤筆記本 · 弱點分析</div>
+          <div class="module-sub">自動彙整聽說讀寫四大領域的錯誤，找出待加強的子題型</div>
+        </div>
+        <div class="stamp brick" id="errors-stamp"><div class="n">0</div><div class="l">RECORDS</div></div>
+      </div>
+
+      <div class="card">
+        <div class="module-sub" style="margin-bottom:10px; font-weight:500; color:var(--ink);">各技能 × 子題型 錯誤分布</div>
+        <div id="errors-chart"></div>
+      </div>
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between;">
+          <div class="module-sub" style="font-weight:500; color:var(--ink);">AI 弱點診斷</div>
+          <button class="btn ghost" id="errors-analyze-btn">產生 / 更新診斷</button>
+        </div>
+        <div id="errors-analysis-status"></div>
+        <div id="errors-analysis" class="muted" style="margin-top:10px; line-height:1.75; white-space:pre-wrap;"></div>
+      </div>
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between; margin-bottom:8px;">
+          <div class="module-sub" style="font-weight:500; color:var(--ink);">手動新增錯誤紀錄</div>
+        </div>
+        <div class="row">
+          <div class="field" style="max-width:140px;">
+            <label>技能</label>
+            <select id="err-skill">
+              <option value="reading">閱讀</option>
+              <option value="writing">寫作</option>
+              <option value="listening">聽力</option>
+              <option value="speaking">口說</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>子題型</label>
+            <input type="text" id="err-subtype" placeholder="例如：T/F/NG、時態錯誤" />
+          </div>
+          <div class="field" style="flex:2;">
+            <label>備註 / 錯誤內容</label>
+            <input type="text" id="err-note" placeholder="簡述錯在哪裡" />
+          </div>
+          <div style="align-self:flex-end;">
+            <button class="btn ghost" id="err-add-btn">新增</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="errors-list"></div>
+    </div>
+
+    <!-- WRITING -->
+    <div class="module" id="m-writing">
+      <div class="module-head">
+        <div>
+          <div class="module-title">寫作批改</div>
+          <div class="module-sub">依 IELTS Writing Band Descriptors 四項標準評分，並附範文</div>
+        </div>
+        <div class="stamp" id="writing-stamp"><div class="n">–</div><div class="l">LAST BAND</div></div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div class="field" style="max-width:220px;">
+            <label>題型</label>
+            <select id="wr-task">
+              <option value="Task 1 (Academic)">Task 1（Academic 圖表）</option>
+              <option value="Task 1 (General Training)">Task 1（General 書信）</option>
+              <option value="Task 2">Task 2（論說文）</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:12px;">
+          <label>作文題目</label>
+          <textarea id="wr-prompt" placeholder="貼上作文題目..." style="min-height:60px;"></textarea>
+        </div>
+        <div style="margin-top:12px;">
+          <label>你的作文 <span class="muted" id="wr-wordcount"></span></label>
+          <textarea id="wr-essay" placeholder="貼上你的作文全文..." style="min-height:180px;"></textarea>
+        </div>
+        <div class="row" style="margin-top:14px; justify-content:flex-end;">
+          <button class="btn" id="wr-grade-btn">送出批改</button>
+        </div>
+        <div id="wr-status"></div>
+      </div>
+
+      <div id="wr-result"></div>
+      <div id="wr-history"></div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div class="module" id="m-schedule">
+      <div class="module-head">
+        <div>
+          <div class="module-title">每日讀書計畫</div>
+          <div class="module-sub">空白表自行填寫，或依弱點與考試日期智慧生成</div>
+        </div>
+        <div class="stamp sage" id="schedule-stamp"><div class="n">–</div><div class="l">DAYS LEFT</div></div>
+      </div>
+
+      <div class="card">
+        <div class="row" style="justify-content:space-between; margin-bottom:6px;">
+          <div class="module-sub" style="font-weight:500; color:var(--ink);">空白計畫表</div>
+          <button class="btn ghost" id="plan-add-row-btn">+ 新增一天</button>
+        </div>
+        <table class="plan" id="blank-plan-table">
+          <thead><tr><th style="width:150px;">日期</th><th>任務</th><th style="width:60px; text-align:center;">完成</th><th style="width:44px;"></th></tr></thead>
+          <tbody id="blank-plan-body"></tbody>
+        </table>
+        <div id="blank-plan-empty" class="empty" style="margin-top:10px;">尚未新增任何項目，點擊右上「+ 新增一天」開始規劃。</div>
+      </div>
+
+      <div class="card">
+        <div class="module-sub" style="font-weight:500; color:var(--ink); margin-bottom:12px;">智慧生成計畫</div>
+        <div class="row">
+          <div class="field">
+            <label>應試日期</label>
+            <input type="date" id="sg-exam-date" />
+          </div>
+          <div class="field">
+            <label>目前程度 Band</label>
+            <input type="number" id="sg-current-band" step="0.5" min="3" max="9" placeholder="例如 5.5" />
+          </div>
+          <div class="field">
+            <label>目標 Band</label>
+            <input type="number" id="sg-target-band" step="0.5" min="3" max="9" placeholder="例如 7.0" />
+          </div>
+          <div class="field">
+            <label>每日可讀書時數</label>
+            <input type="number" id="sg-hours" step="0.5" min="0.5" max="12" placeholder="例如 2" />
+          </div>
+        </div>
+        <div class="row" style="margin-top:14px; justify-content:flex-end;">
+          <button class="btn" id="sg-generate-btn">依弱點智慧生成計畫</button>
+        </div>
+        <div id="sg-status"></div>
+      </div>
+
+      <div id="sg-result"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="module" id="m-settings">
+      <div class="module-head">
+        <div>
+          <div class="module-title">設定</div>
+          <div class="module-sub">連結你的 Gemini API 金鑰，以啟用 AI 功能</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <label>Gemini API 金鑰</label>
+        <div class="row">
+          <div class="field" style="flex:2;">
+            <input type="password" id="set-apikey" placeholder="貼上你的 Gemini API Key" />
+          </div>
+          <button class="btn ghost" id="set-toggle-key">顯示</button>
+        </div>
+        <div class="muted" style="margin-top:8px; line-height:1.7;">
+          尚未申請金鑰嗎？可前往
+          <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a>
+          免費取得。金鑰只存在這個瀏覽器的 localStorage，並直接由你的瀏覽器呼叫 Gemini，不會經過任何第三方伺服器。<br/>
+          <b>把網站掛上網域後（例如 Cloudflare Pages），請到 Google Cloud Console 幫這把金鑰加上 HTTP referrer 限制</b>，
+          只允許你自己的網址呼叫。用 <code>file://</code> 直接開檔案反而沒辦法設這道限制。
+        </div>
+        <div style="margin-top:14px;">
+          <label>使用模型</label>
+          <div class="row">
+            <div class="field" style="flex:2;">
+              <select id="set-model"></select>
+            </div>
+            <button class="btn ghost" id="set-load-models">載入可用模型</button>
+          </div>
+          <div class="muted" style="margin-top:8px; line-height:1.7;">
+            Google 換版本很勤，寫死的清單很快就會失效（<code>gemini-2.0-flash</code> 已於 2026 年 3 月退役）。
+            貼上金鑰後按「載入可用模型」，會直接跟 API 要一份這把金鑰真正能用的清單。
+            <b>模型沒有免費額度時，Google 回的是 429，不是「找不到模型」</b>，所以第一次呼叫就說到上限，多半是選錯模型而不是真的用完。
+          </div>
+          <div id="model-status"></div>
+        </div>
+        <div style="margin-top:14px;">
+          <label>單字發音口音</label>
+          <select id="set-accent">
+            <option value="en-GB">英式 en-GB</option>
+            <option value="en-US">美式 en-US</option>
+          </select>
+        </div>
+        <div class="row" style="margin-top:16px; justify-content:flex-end;">
+          <button class="btn" id="set-save-btn">儲存設定</button>
+        </div>
+        <div id="set-status"></div>
+      </div>
+
+      <div class="card">
+        <div class="module-sub" style="font-weight:500; color:var(--ink); margin-bottom:4px;">備份與還原</div>
+        <div class="muted" style="margin-bottom:12px; line-height:1.7;">
+          所有資料只存在這個瀏覽器裡。清除瀏覽資料、換裝置、或 iOS Safari 連續七天沒開啟，都會讓資料消失。
+          <b>養成每週匯出一次的習慣</b>，檔案存到雲端硬碟就不怕。
+        </div>
+        <div class="row">
+          <button class="btn" id="data-export-btn">匯出備份檔（.json）</button>
+          <button class="btn ghost" id="data-import-btn">從備份檔還原</button>
+          <input type="file" id="data-import-file" accept="application/json,.json" style="display:none;" />
+        </div>
+        <div id="data-status"></div>
+        <div class="muted" style="margin-top:10px;" id="storage-usage"></div>
+      </div>
+
+      <div class="card">
+        <div class="module-sub" style="font-weight:500; color:var(--ink); margin-bottom:4px;">跨裝置雲端進度（選用）</div>
+        <div class="muted" style="margin-bottom:12px; line-height:1.7;">
+          註冊一組帳號，進度就會存到雲端，換手機、電腦都能接續，也不怕瀏覽器清資料。
+          <b>密語只用來加密驗證，伺服器不存明文</b>；但忘記就救不回，請記牢。
+          只有一台裝置的話，用上面的匯出備份也夠。
+        </div>
+
+        <div id="cloud-signed-out">
+          <div class="row" style="gap:10px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:160px;">
+              <label>帳號</label>
+              <input type="text" id="cloud-userid" placeholder="小寫英數，例如 sean2006" autocomplete="username" />
+            </div>
+            <div style="flex:1; min-width:160px;">
+              <label>通關密語</label>
+              <input type="password" id="cloud-pass" placeholder="至少 6 個字" autocomplete="current-password" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:14px; justify-content:flex-end;">
+            <button class="btn ghost" id="cloud-register-btn">第一次使用（註冊）</button>
+            <button class="btn" id="cloud-login-btn">登入</button>
+          </div>
+        </div>
+
+        <div id="cloud-signed-in" style="display:none;">
+          <div class="muted" style="margin-bottom:12px;">
+            目前登入：<b id="cloud-who"></b>　<span id="cloud-lastsync"></span>
+          </div>
+          <div class="row" style="align-items:center;">
+            <label style="display:flex; align-items:center; gap:6px; margin:0;">
+              <input type="checkbox" id="cloud-autosync" style="width:auto;" /> 每次變更自動同步到雲端
+            </label>
+          </div>
+          <div class="row" style="margin-top:14px; justify-content:flex-end;">
+            <button class="btn ghost" id="cloud-logout-btn">登出</button>
+            <button class="btn ghost" id="cloud-pull-btn">立即下載雲端資料</button>
+            <button class="btn" id="cloud-push-btn">立即上傳到雲端</button>
+          </div>
+        </div>
+
+        <div id="cloud-status"></div>
+        <div class="muted" style="margin-top:10px;">
+          這不是即時協作。兩台裝置同時改時，雲端會擋下較舊的那次上傳並提醒你先下載，不會靜默蓋掉。
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="module-sub" style="font-weight:500; color:var(--ink); margin-bottom:8px;">清除資料</div>
+        <div class="muted" style="margin-bottom:10px;">刪除單一模組的本地資料，無法復原。建議先匯出備份。</div>
+        <div class="row">
+          <button class="btn danger" data-clear="vocab-library">清除單字庫</button>
+          <button class="btn danger" data-clear="error-notebook">清除錯誤筆記本</button>
+          <button class="btn danger" data-clear="writing-history">清除寫作紀錄</button>
+          <button class="btn danger" data-clear="schedule-blank">清除空白計畫表</button>
+          <button class="btn danger" data-clear="schedule-smart">清除智慧計畫表</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script>
+/* ============================================================
+   考場筆記 · IELTS 個人讀書站
+   ------------------------------------------------------------
+   資料一律先寫入本機 localStorage，可選擇性同步到 JSONBin。
+   所有事件都走委派（不使用 inline onclick），避免單字含引號時
+   把 HTML 屬性打斷。
+   ============================================================ */
+
+/* ---------------- 小工具 ---------------- */
+function escapeHtml(s){
+  return (s==null?'':String(s)).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+/* 用本地時區算日期。原本的 toISOString() 是 UTC，台灣早上 8 點前會算成前一天 */
+function todayStr(d){
+  const t = d || new Date();
+  const p = n => String(n).padStart(2,'0');
+  return `${t.getFullYear()}-${p(t.getMonth()+1)}-${p(t.getDate())}`;
+}
+function addDays(dateStr, n){
+  const [y,m,d] = dateStr.split('-').map(Number);
+  const t = new Date(y, m-1, d);
+  t.setDate(t.getDate() + n);
+  return todayStr(t);
+}
+function uid(){
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+}
+function setStatus(elId, msg, type){
+  const el = document.getElementById(elId);
+  if(!el) return;
+  el.innerHTML = msg ? `<div class="status ${type||'info'}">${type==='info'?'<span class="spin"></span>':''}${escapeHtml(msg)}</div>` : '';
+}
+function showGlobalWarning(html){
+  document.getElementById('global-warning').innerHTML = html ? `<div class="warn-banner">${html}</div>` : '';
+}
+
+/* ---------------- 儲存層 ---------------- */
+let APP_STATE = {};
+let STORAGE_FULL = false;
+
+function loadLocalState(){
+  try{
+    const raw = localStorage.getItem('ielts-app-state');
+    APP_STATE = raw ? JSON.parse(raw) : {};
+  }catch(e){ APP_STATE = {}; }
+}
+function saveLocalState(){
+  try{
+    localStorage.setItem('ielts-app-state', JSON.stringify(APP_STATE));
+    if(STORAGE_FULL){ STORAGE_FULL = false; showGlobalWarning(''); }
+    return true;
+  }catch(e){
+    /* 配額滿了要讓使用者知道，不能靜靜吞掉 —— 否則會以為有存到 */
+    STORAGE_FULL = true;
+    showGlobalWarning(
+      '<b>儲存空間已滿，剛才這筆資料沒有存進去。</b>請到「設定 → 備份與還原」匯出目前資料，' +
+      '再清除一部分寫作紀錄（範文很佔空間）後重試。'
+    );
+    console.error('local save failed', e);
+    return false;
+  }
+}
+function storeGet(key, fallback){
+  return (key in APP_STATE) ? APP_STATE[key] : fallback;
+}
+function storeSet(key, value){
+  APP_STATE[key] = value;
+  const ok = saveLocalState();
+  scheduleCloudPush();
+  return ok;
+}
+function storageUsage(){
+  try{
+    const bytes = new Blob([JSON.stringify(APP_STATE)]).size;
+    return (bytes/1024).toFixed(0);
+  }catch(e){ return '?'; }
+}
+
+/* ---------------- 雲端進度（Cloudflare D1 後端，選用） ----------------
+   帳號 + 密語登入拿 token，之後整包 APP_STATE 上傳/下載。
+   version 做樂觀鎖：上傳帶 version，雲端較新會回 409，前端下載較新版並提醒，
+   不靜默覆蓋（呼應約束 6）。 */
+let CLOUD = { userId:'', token:'', autoSync:false, version:0, lastSync:'' };
+let cloudTimer = null;
+
+/* API 與前端同源。用 wrangler pages dev / deploy 後 /api 才存在；
+   直接用 file:// 開這個 html 時雲端功能不可用，屬預期。 */
+const CLOUD_API = '/api';
+
+function loadCloudSettings(){
+  try{
+    const raw = localStorage.getItem('ielts-cloud-settings');
+    if(raw) CLOUD = Object.assign(CLOUD, JSON.parse(raw));
+  }catch(e){}
+}
+function saveCloudSettings(){
+  try{ localStorage.setItem('ielts-cloud-settings', JSON.stringify(CLOUD)); }catch(e){}
+}
+function setCloudStatus(msg, type){ setStatus('cloud-status', msg, type); }
+function cloudLoggedIn(){ return !!CLOUD.token; }
+
+/* 把後端回傳的 { error } 轉成可讀訊息；後端訊息本身就含下一步 */
+async function cloudErrorMessage(res, prefix){
+  let detail = '';
+  try{ detail = (await res.json())?.error || ''; }catch(_){}
+  return detail || `${prefix}（HTTP ${res.status}）`;
+}
+
+async function cloudAuth(kind){
+  const userId = (document.getElementById('cloud-userid').value || '').trim().toLowerCase();
+  const passphrase = document.getElementById('cloud-pass').value || '';
+  if(!userId || !passphrase){ setCloudStatus('請填入帳號與通關密語。', 'err'); return; }
+  setCloudStatus(kind === 'register' ? '正在註冊...' : '正在登入...', 'info');
+  try{
+    const res = await fetch(`${CLOUD_API}/${kind}`, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ userId, passphrase })
+    });
+    if(!res.ok) throw new Error(await cloudErrorMessage(res, kind === 'register' ? '註冊失敗' : '登入失敗'));
+    const data = await res.json();
+    CLOUD.userId = data.userId; CLOUD.token = data.token;
+    document.getElementById('cloud-pass').value = '';
+    saveCloudSettings();
+    updateCloudUI();
+    // 登入後先把雲端資料拉下來對齊；新帳號雲端還沒東西就把本機推上去
+    await cloudPull(true);
+    if(CLOUD.version === 0) await cloudPush();
+    setCloudStatus(kind === 'register' ? '註冊成功，已開始同步。' : '登入成功。', 'ok');
+  }catch(e){ setCloudStatus(e.message, 'err'); }
+}
+
+function cloudLogout(){
+  CLOUD.token = ''; CLOUD.version = 0; CLOUD.lastSync = '';
+  saveCloudSettings();
+  updateCloudUI();
+  setCloudStatus('已登出。本機資料仍在，重新登入即可再同步。', 'ok');
+}
+
+async function cloudPush(){
+  if(!cloudLoggedIn()){ setCloudStatus('請先登入。', 'err'); return; }
+  setCloudStatus('正在上傳...', 'info');
+  try{
+    const res = await fetch(`${CLOUD_API}/progress`, {
+      method:'PUT',
+      headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${CLOUD.token}` },
+      body: JSON.stringify({ state: APP_STATE, version: CLOUD.version })
+    });
+    if(res.status === 409){
+      // 雲端有更新的版本（多半是另一台裝置改過）。採用雲端版並大聲提醒，不靜默蓋掉
+      const data = await res.json();
+      await applyCloudState(data.state, data.version);
+      showGlobalWarning('<b>雲端有較新的進度，已幫你下載覆蓋本機。</b>如果你剛剛在這台做的變更不見了，請重做一次再同步。');
+      setCloudStatus('偵測到雲端有較新版本，已改用雲端資料。', 'err');
+      return;
+    }
+    if(res.status === 401){ handleCloudExpired(); return; }
+    if(!res.ok) throw new Error(await cloudErrorMessage(res, '上傳失敗'));
+    const data = await res.json();
+    CLOUD.version = data.version; CLOUD.lastSync = data.updatedAt || new Date().toISOString();
+    saveCloudSettings();
+    updateCloudUI();
+    setCloudStatus('已同步到雲端。', 'ok');
+  }catch(e){ setCloudStatus(e.message, 'err'); }
+}
+
+async function cloudPull(silent){
+  if(!cloudLoggedIn()){ if(!silent) setCloudStatus('請先登入。', 'err'); return; }
+  if(!silent) setCloudStatus('正在下載...', 'info');
+  try{
+    const res = await fetch(`${CLOUD_API}/progress`, {
+      headers:{ 'Authorization':`Bearer ${CLOUD.token}` }
+    });
+    if(res.status === 401){ handleCloudExpired(); return; }
+    if(!res.ok) throw new Error(await cloudErrorMessage(res, '下載失敗'));
+    const data = await res.json();
+    if(data.state == null){
+      // 雲端還沒有這個帳號的資料（新帳號）
+      CLOUD.version = data.version || 0; saveCloudSettings(); updateCloudUI();
+      if(!silent) setCloudStatus('雲端還沒有資料，按「立即上傳」把這台的資料存上去。', 'info');
+      return;
+    }
+    await applyCloudState(data.state, data.version);
+    if(!silent) setCloudStatus('已從雲端載入。', 'ok');
+  }catch(e){ if(!silent) setCloudStatus(e.message, 'err'); }
+}
+
+/* 把雲端資料寫進本機並重繪。version 一起更新，下次上傳才對得上 */
+async function applyCloudState(state, version){
+  APP_STATE = state || {};
+  CLOUD.version = version || 0;
+  CLOUD.lastSync = new Date().toISOString();
+  saveLocalState();
+  saveCloudSettings();
+  updateCloudUI();
+  await rerenderAll();
+}
+
+function handleCloudExpired(){
+  CLOUD.token = '';
+  saveCloudSettings();
+  updateCloudUI();
+  setCloudStatus('登入已過期，請重新登入。', 'err');
+}
+
+function scheduleCloudPush(){
+  if(!CLOUD.autoSync || !cloudLoggedIn()) return;
+  clearTimeout(cloudTimer);
+  cloudTimer = setTimeout(cloudPush, 2500);
+}
+
+/* 依登入狀態切換設定頁的兩塊 UI，並填入現況 */
+function updateCloudUI(){
+  const out = document.getElementById('cloud-signed-out');
+  const inn = document.getElementById('cloud-signed-in');
+  if(!out || !inn) return; // 設定頁還沒渲染時（例如測試環境）直接跳過
+  const logged = cloudLoggedIn();
+  out.style.display = logged ? 'none' : '';
+  inn.style.display = logged ? '' : 'none';
+  if(logged){
+    document.getElementById('cloud-who').textContent = CLOUD.userId;
+    document.getElementById('cloud-autosync').checked = !!CLOUD.autoSync;
+    const last = document.getElementById('cloud-lastsync');
+    last.textContent = CLOUD.lastSync ? `上次同步：${new Date(CLOUD.lastSync).toLocaleString()}` : '尚未同步';
+  }
+}
+
+/* ---------------- Gemini ---------------- */
+let SETTINGS = { apiKey:'', model:'', accent:'en-GB' };
+
+/* 只在抓不到清單時當備援。真正的清單一律跟 API 要 */
+const FALLBACK_MODELS = ['gemini-2.5-flash', 'gemini-2.5-flash-lite'];
+
+/* 這些不是拿來對話的：向量、語音、繪圖、影片 */
+const MODEL_EXCLUDE = /embedding|aqa|imagen|image-generation|tts|veo|vision$/i;
+
+function modelLabel(id){
+  if(/lite/i.test(id))  return `${id}（額度最寬鬆，適合大量查單字）`;
+  if(/flash/i.test(id)) return `${id}（速度與品質的平衡，推薦）`;
+  if(/pro/i.test(id))   return `${id}（品質最好，但免費額度通常很少或沒有）`;
+  return id;
+}
+
+/* 沒有存過模型時，挑一個最不容易踩雷的：flash 但不是 lite、不是 preview */
+function pickDefaultModel(ids){
+  return ids.find(id => /flash/i.test(id) && !/lite|preview|exp|thinking/i.test(id))
+      || ids.find(id => /flash/i.test(id))
+      || ids[0] || '';
+}
+
+function renderModelOptions(ids, selected){
+  const sel = document.getElementById('set-model');
+  if(!ids.length){
+    sel.innerHTML = '<option value="">（請先貼上金鑰並按「載入可用模型」）</option>';
+    return;
+  }
+  sel.innerHTML = ids.map(id=>`<option value="${escapeHtml(id)}">${escapeHtml(modelLabel(id))}</option>`).join('');
+  /* 存過的模型如果已經退役就不會在清單裡，自動換一個可用的 */
+  sel.value = ids.includes(selected) ? selected : pickDefaultModel(ids);
+}
+
+async function fetchModels(silent){
+  const key = document.getElementById('set-apikey').value.trim() || SETTINGS.apiKey;
+  if(!key){
+    if(!silent) setStatus('model-status', '請先貼上 Gemini API 金鑰。', 'err');
+    return;
+  }
+  const btn = document.getElementById('set-load-models');
+  btn.disabled = true;
+  if(!silent) setStatus('model-status', '正在向 Google 查詢可用模型...', 'info');
+  try{
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200&key=' + encodeURIComponent(key));
+    if(!res.ok){
+      let msg = `查詢失敗（HTTP ${res.status}）`;
+      try{ const e = await res.json(); msg = e?.error?.message || msg; }catch(_){}
+      throw new Error(msg);
+    }
+    const data = await res.json();
+    const ids = (data.models || [])
+      .filter(m => (m.supportedGenerationMethods || []).includes('generateContent'))
+      .map(m => String(m.name || '').replace(/^models\//, ''))
+      .filter(id => id && !MODEL_EXCLUDE.test(id))
+      .sort();
+    if(!ids.length) throw new Error('這把金鑰沒有任何可用的對話模型。');
+
+    storeSet('model-list', ids);
+    renderModelOptions(ids, SETTINGS.model);
+    SETTINGS.model = document.getElementById('set-model').value;
+    storeSet('settings', SETTINGS);
+    if(!silent) setStatus('model-status', `找到 ${ids.length} 個可用模型，已選擇 ${SETTINGS.model}。`, 'ok');
+  }catch(e){
+    if(!silent) setStatus('model-status', e.message, 'err');
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function loadSettings(){
+  SETTINGS = Object.assign(SETTINGS, storeGet('settings', {}));
+  document.getElementById('set-apikey').value = SETTINGS.apiKey || '';
+  document.getElementById('set-accent').value = SETTINGS.accent || 'en-GB';
+  const cached = storeGet('model-list', []);
+  renderModelOptions(cached.length ? cached : (SETTINGS.model ? [SETTINGS.model] : FALLBACK_MODELS), SETTINGS.model);
+  if(!SETTINGS.model) SETTINGS.model = document.getElementById('set-model').value;
+}
+
+async function callGemini(prompt){
+  if(!SETTINGS.apiKey){
+    throw new Error('尚未設定 Gemini API 金鑰，請先到「設定」頁貼上金鑰。');
+  }
+  const model = SETTINGS.model;
+  if(!model){
+    throw new Error('尚未選擇模型。請到「設定」頁按「載入可用模型」。');
+  }
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(SETTINGS.apiKey)}`;
+  let res;
+  try{
+    res = await fetch(url, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ contents:[{ parts:[{ text:prompt }] }] })
+    });
+  }catch(e){
+    throw new Error('連不上 Gemini。請檢查網路連線，或確認金鑰的 referrer 限制是否擋到目前的網址。');
+  }
+  if(!res.ok){
+    let raw = '';
+    try{ const e = await res.json(); raw = e?.error?.message || ''; }catch(_){}
+    let msg = raw || `Gemini 回傳錯誤（HTTP ${res.status}）`;
+
+    if(res.status === 429){
+      /* limit: 0 代表這個模型對這個專案根本沒有配額，跟「用太快」是兩回事，
+         訊息要分開講，不然使用者會傻等一分鐘再試還是失敗 */
+      const zeroQuota = /limit:\s*0\b/i.test(raw) || /free[_ ]?tier/i.test(raw);
+      msg = zeroQuota
+        ? `「${model}」對你的專案沒有可用額度（Google 對這種情況回的是 429，不是「找不到模型」）。`
+          + '請到設定頁按「載入可用模型」換一個，退役或付費限定的模型都會是這個結果。'
+        : `已達速率上限，等一分鐘再試。目前使用 ${model}，若常常卡住可換成 lite 系列，每日額度較寬鬆。`;
+    }
+    if(res.status === 404){
+      msg = `找不到模型「${model}」，可能已經退役。請到設定頁按「載入可用模型」重新選一個。`;
+    }
+    if(res.status === 400 && /API key/i.test(raw)) msg = '金鑰無效，請到設定頁重新確認。';
+    if(res.status === 403) msg = '金鑰被拒絕。若已設定 HTTP referrer 限制，請確認目前網址在允許清單內。';
+    throw new Error(msg);
+  }
+  const data = await res.json();
+  const text = (data?.candidates?.[0]?.content?.parts || []).map(p=>p.text||'').join('');
+  if(!text) throw new Error('Gemini 沒有回傳內容，請重試一次。');
+  return text;
+}
+
+function extractJson(text){
+  let cleaned = String(text).trim().replace(/^```(?:json)?/i,'').replace(/```$/,'').trim();
+  try{ return JSON.parse(cleaned); }catch(e){}
+  const match = cleaned.match(/[\{\[][\s\S]*[\}\]]/);
+  if(match){
+    try{ return JSON.parse(match[0]); }catch(e){}
+  }
+  return null;
+}
+
+/* JSON 解析失敗時自動重試一次，避免整個流程因為多一行說明文字就掛掉 */
+async function callGeminiJSON(prompt){
+  const suffix = '\n\n只回傳合法 JSON，不要加任何說明文字，不要用 markdown 圍欄。';
+  let parsed = extractJson(await callGemini(prompt + suffix));
+  if(parsed !== null) return parsed;
+  parsed = extractJson(await callGemini(prompt + suffix + '\n再次提醒：第一個字元必須是 { 或 [。'));
+  if(parsed !== null) return parsed;
+  throw new Error('AI 回傳的格式無法解析，請再試一次。');
+}
+
+function speak(text, accent){
+  if(!('speechSynthesis' in window)) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = accent || SETTINGS.accent || 'en-GB';
+  u.rate = 0.92;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+/* ---------------- 事件委派 ---------------- */
+const ACTIONS = {};
+document.addEventListener('click', (e)=>{
+  const el = e.target.closest('[data-act]');
+  if(!el) return;
+  const fn = ACTIONS[el.dataset.act];
+  if(fn){ e.preventDefault(); fn(el); }
+});
+document.addEventListener('change', (e)=>{
+  const el = e.target.closest('[data-change]');
+  if(!el) return;
+  const fn = ACTIONS[el.dataset.change];
+  if(fn) fn(el);
+});
+
+/* ---------------- 導覽 ---------------- */
+function gotoModule(name){
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active', b.dataset.m === name));
+  document.querySelectorAll('.module').forEach(m=>m.classList.remove('active'));
+  document.getElementById('m-'+name).classList.add('active');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+document.getElementById('nav').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button[data-m]');
+  if(btn) gotoModule(btn.dataset.m);
+});
+
+/* ============================================================
+   單字庫
+   ============================================================ */
+let VOCAB = [];
+const BOX_INTERVALS = { 1:1, 2:2, 3:4, 4:7, 5:14 };
+
+/* 舊資料沒有 id / 複習欄位，載入時補上 */
+function migrateVocab(list){
+  let changed = false;
+  list.forEach(v=>{
+    if(!v.id){ v.id = uid(); changed = true; }
+    if(typeof v.box !== 'number'){ v.box = 1; changed = true; }
+    if(!v.nextReview){ v.nextReview = todayStr(); changed = true; }
+    if(typeof v.reviewCount !== 'number'){ v.reviewCount = 0; changed = true; }
+    if(typeof v.lapses !== 'number'){ v.lapses = 0; changed = true; }
+    if(!v.addedAt){ v.addedAt = todayStr(); changed = true; }
+  });
+  return changed;
+}
+function dueVocab(){
+  const t = todayStr();
+  return VOCAB.filter(v => (v.nextReview || t) <= t);
+}
+function renderVocabStamp(){
+  document.getElementById('vocab-stamp').querySelector('.n').textContent = VOCAB.length;
+  document.getElementById('vocab-filter-card').style.display = VOCAB.length > 5 ? '' : 'none';
+}
+function renderNavDue(){
+  const n = dueVocab().length;
+  const el = document.getElementById('nav-due-count');
+  el.innerHTML = n ? `<span class="due-badge">${n}</span>` : '';
+  document.getElementById('review-stamp').querySelector('.n').textContent = n;
+}
+
+function vocabCardHtml(v){
+  const listBlock = (label, arr) => (arr && arr.length)
+    ? `<div style="margin-top:6px;"><b>${label}：</b>${arr.map(c=>`<span class="tag">${escapeHtml(c)}</span>`).join('')}</div>` : '';
+  return `
+  <div class="card">
+    <div class="row" style="justify-content:space-between; align-items:flex-start;">
+      <div>
+        <span class="word-word">${escapeHtml(v.word)}</span>
+        <span class="word-ipa">${escapeHtml(v.ipa||'')}</span>
+        <span class="muted">${escapeHtml(v.partOfSpeech||'')}</span>
+      </div>
+      <div class="row" style="gap:6px;">
+        <span class="tag">盒 ${v.box||1}／5</span>
+        <button class="icon-btn" title="播放發音" data-act="speak" data-word="${escapeHtml(v.word)}">🔊</button>
+        <button class="icon-btn" title="刪除" data-act="vocab-del" data-id="${escapeHtml(v.id)}">✕</button>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div style="font-size:13.5px; line-height:1.7;">
+      <div><b>中文意思：</b>${escapeHtml(v.meaningZh||'')}</div>
+      <div><b>英文釋義：</b>${escapeHtml(v.meaningEn||'')}</div>
+      ${listBlock('常用搭配', v.collocations)}
+      ${listBlock('連接詞／慣用搭配', v.linkingWords)}
+      ${(v.examples && v.examples.length) ? `<div style="margin-top:8px;"><b>例句：</b><ul style="margin:6px 0 0 18px; padding:0;">${v.examples.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div>` : ''}
+      ${listBlock('同義字', v.synonyms)}
+      <div class="muted" style="margin-top:8px;">
+        ${v.band ? `對應難度約 ${escapeHtml(v.band)}｜` : ''}下次複習 ${escapeHtml(v.nextReview||'-')}
+        ${v.lapses ? `｜答錯 ${v.lapses} 次` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* 查詢結果的暫存（尚未加入單字庫）。按「加入單字庫」才會真的寫入。 */
+let VOCAB_PREVIEW = null;
+function renderVocabPreview(){
+  const wrap = document.getElementById('vocab-preview');
+  if(!wrap) return;
+  const v = VOCAB_PREVIEW;
+  if(!v){ wrap.innerHTML = ''; return; }
+  const listBlock = (label, arr) => (arr && arr.length)
+    ? `<div style="margin-top:6px;"><b>${label}：</b>${arr.map(c=>`<span class="tag">${escapeHtml(c)}</span>`).join('')}</div>` : '';
+  wrap.innerHTML = `
+  <div class="card" style="border-color:var(--teal);">
+    <div class="row" style="justify-content:space-between; align-items:flex-start;">
+      <span class="tag skill-reading">查詢結果 · 尚未加入</span>
+      <button class="icon-btn" title="播放發音" data-act="speak" data-word="${escapeHtml(v.word)}">🔊</button>
+    </div>
+    <div style="margin-top:8px;">
+      <span class="word-word">${escapeHtml(v.word)}</span>
+      <span class="word-ipa">${escapeHtml(v.ipa||'')}</span>
+      <span class="muted">${escapeHtml(v.partOfSpeech||'')}</span>
+    </div>
+    <div class="divider"></div>
+    <div style="font-size:13.5px; line-height:1.7;">
+      <div><b>中文意思：</b>${escapeHtml(v.meaningZh||'')}</div>
+      <div><b>英文釋義：</b>${escapeHtml(v.meaningEn||'')}</div>
+      ${listBlock('常用搭配', v.collocations)}
+      ${listBlock('連接詞／慣用搭配', v.linkingWords)}
+      ${(v.examples && v.examples.length) ? `<div style="margin-top:8px;"><b>例句：</b><ul style="margin:6px 0 0 18px; padding:0;">${v.examples.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div>` : ''}
+      ${listBlock('同義字', v.synonyms)}
+      ${v.band ? `<div class="muted" style="margin-top:8px;">對應難度約 ${escapeHtml(v.band)}</div>` : ''}
+    </div>
+    <div class="row" style="margin-top:14px; justify-content:flex-end;">
+      <button class="btn ghost" data-act="vocab-preview-cancel">捨棄</button>
+      <button class="btn" data-act="vocab-add">加入單字庫</button>
+    </div>
+  </div>`;
+}
+
+function renderVocabList(){
+  const wrap = document.getElementById('vocab-list');
+  if(VOCAB.length === 0){
+    wrap.innerHTML = '<div class="empty">單字庫是空的。在上面輸入一個單字，AI 會整理好完整資料並排進複習佇列。</div>';
+    return;
+  }
+  const q = (document.getElementById('vocab-filter').value || '').trim().toLowerCase();
+  const sort = document.getElementById('vocab-sort').value;
+  let list = VOCAB.filter(v => !q || (v.word||'').toLowerCase().includes(q) || (v.meaningZh||'').includes(q));
+  if(sort === 'alpha')      list = list.slice().sort((a,b)=>(a.word||'').localeCompare(b.word||''));
+  else if(sort === 'weak')  list = list.slice().sort((a,b)=>(a.box||1)-(b.box||1) || (b.lapses||0)-(a.lapses||0));
+  else                      list = list.slice().reverse();
+
+  wrap.innerHTML = list.length
+    ? list.map(vocabCardHtml).join('')
+    : '<div class="empty">沒有符合的單字。</div>';
+}
+
+ACTIONS['speak'] = (el)=> speak(el.dataset.word);
+ACTIONS['vocab-del'] = (el)=>{
+  const i = VOCAB.findIndex(v=>v.id === el.dataset.id);
+  if(i < 0) return;
+  VOCAB.splice(i,1);
+  storeSet('vocab-library', VOCAB);
+  renderVocabList(); renderVocabStamp(); renderNavDue(); renderReview(); renderBoxDist();
+};
+document.getElementById('vocab-filter').addEventListener('input', renderVocabList);
+document.getElementById('vocab-sort').addEventListener('change', renderVocabList);
+
+document.getElementById('vocab-input').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') document.getElementById('vocab-search-btn').click();
+});
+
+/* 查詢：只跟 AI 要資料並顯示預覽，不寫入單字庫。要不要收藏交給下面的「加入單字庫」。 */
+document.getElementById('vocab-search-btn').onclick = async ()=>{
+  const input = document.getElementById('vocab-input');
+  const word = input.value.trim();
+  if(!word) return;
+
+  const existing = VOCAB.find(v => (v.word||'').toLowerCase() === word.toLowerCase());
+  if(existing){
+    setStatus('vocab-status', `「${word}」已經在單字庫裡了。`, 'ok');
+    setTimeout(()=>setStatus('vocab-status',''), 2500);
+    return;
+  }
+
+  const btn = document.getElementById('vocab-search-btn');
+  btn.disabled = true;
+  setStatus('vocab-status', `正在查詢「${word}」...`, 'info');
+  try{
+    const prompt = `你是一位雅思(IELTS)英語教學專家。請針對英文單字或片語 "${word}" 提供完整學習資料，回傳單一 JSON 物件，格式如下（欄位不可省略，找不到就給空陣列或空字串）：
+{
+  "word": "原始單字",
+  "ipa": "國際音標",
+  "partOfSpeech": "詞性，如 v. / n. / adj.",
+  "meaningZh": "簡潔中文意思",
+  "meaningEn": "簡潔英文釋義",
+  "collocations": ["常用搭配詞組，3-5個"],
+  "linkingWords": ["常搭配使用的連接詞或介系詞片語，2-4個，適合寫作口說使用"],
+  "examples": ["包含此單字的雅思寫作/口說風格例句，2句"],
+  "synonyms": ["同義字，2-4個"],
+  "band": "此單字難度對應雅思等級估計，如 6.5-7.5"
+}`;
+    const data = await callGeminiJSON(prompt);
+    data.word = data.word || word;
+    VOCAB_PREVIEW = data;            // 只暫存預覽，尚未加入
+    renderVocabPreview();
+    setStatus('vocab-status', '查到了。看過下面的結果後，按「加入單字庫」才會存進去。', 'ok');
+    setTimeout(()=>setStatus('vocab-status',''), 3500);
+  }catch(e){
+    setStatus('vocab-status', e.message, 'err');
+  }finally{
+    btn.disabled = false;
+  }
+};
+
+/* 加入：把預覽的查詢結果正式寫入單字庫並排進複習佇列。 */
+ACTIONS['vocab-add'] = ()=>{
+  const data = VOCAB_PREVIEW;
+  if(!data) return;
+  /* 查完到按加入之間，可能已從別處加了同一個字，避免重複 */
+  const dup = VOCAB.find(v => (v.word||'').toLowerCase() === (data.word||'').toLowerCase());
+  if(dup){
+    VOCAB_PREVIEW = null; renderVocabPreview();
+    setStatus('vocab-status', `「${data.word}」已經在單字庫裡了。`, 'ok');
+    setTimeout(()=>setStatus('vocab-status',''), 2500);
+    return;
+  }
+  data.id = uid();
+  data.box = 1;
+  data.nextReview = todayStr();
+  data.reviewCount = 0;
+  data.lapses = 0;
+  data.addedAt = todayStr();
+  VOCAB.push(data);
+  storeSet('vocab-library', VOCAB);
+  REVIEW_QUEUE.push({ id:data.id, retried:false });
+  VOCAB_PREVIEW = null;
+  renderVocabPreview();
+  document.getElementById('vocab-input').value = '';
+  renderVocabList(); renderVocabStamp(); renderNavDue(); renderBoxDist(); renderReview(); renderReviewStats();
+  setStatus('vocab-status', '已加入單字庫，今天就會出現在複習佇列。', 'ok');
+  setTimeout(()=>setStatus('vocab-status',''), 2500);
+};
+
+/* 捨棄查詢結果，不加入。 */
+ACTIONS['vocab-preview-cancel'] = ()=>{
+  VOCAB_PREVIEW = null;
+  renderVocabPreview();
+  setStatus('vocab-status', '');
+};
+
+/* ============================================================
+   複習（Leitner 五盒）
+   ============================================================ */
+let REVIEW_QUEUE = [];
+let REVIEW_REVEALED = false;
+let REVIEW_DONE = 0;
+
+function renderBoxDist(){
+  const counts = [0,0,0,0,0];
+  VOCAB.forEach(v => counts[Math.min(5, Math.max(1, v.box||1)) - 1]++);
+  document.getElementById('box-dist').innerHTML = counts.map((c,i)=>`
+    <div class="box-cell">
+      <div class="c">${c}</div>
+      <div class="t">第 ${i+1} 盒</div>
+    </div>`).join('');
+}
+
+function buildReviewQueue(){
+  REVIEW_QUEUE = dueVocab()
+    .slice()
+    .sort((a,b)=>(a.box||1)-(b.box||1))
+    .map(v=>({ id:v.id, retried:false }));
+  REVIEW_DONE = 0;
+  REVIEW_REVEALED = false;
+}
+
+/* ---- 複習模式（反向測驗）----
+   recognition = 看英文想中文（預設）；production = 看中文拼英文。
+   這是介面偏好而非學習進度，存本機、不進雲端同步。 */
+let REVIEW_MODE = 'recognition';
+let REVIEW_TYPED = '';    // production 模式使用者拼的字
+let REVIEW_MATCH = false; // 拼字是否完全正確
+function loadReviewMode(){
+  try{ REVIEW_MODE = localStorage.getItem('ielts-review-mode') || 'recognition'; }catch(_){}
+}
+function applyReviewModeUI(){
+  document.querySelectorAll('#review-mode-seg button').forEach(b=>
+    b.classList.toggle('on', b.dataset.mode === REVIEW_MODE));
+}
+ACTIONS['review-mode'] = (el)=>{
+  REVIEW_MODE = (el.dataset.mode === 'production') ? 'production' : 'recognition';
+  try{ localStorage.setItem('ielts-review-mode', REVIEW_MODE); }catch(_){}
+  applyReviewModeUI();
+  REVIEW_REVEALED = false; REVIEW_TYPED = ''; REVIEW_MATCH = false;
+  renderReview();
+};
+/* 拼字比對去頭尾空白、轉小寫，避免大小寫或多餘空白誤判成拼錯 */
+function normWord(s){ return String(s||'').trim().toLowerCase(); }
+
+/* ---- 學習連續天數與統計 ---- */
+/* 每次真的複習一個字就記下當天日期（用 todayStr 走本地時區，不用 UTC）。
+   用來算連續天數與近 7 天活動。 */
+function recordStudyDay(){
+  const log = storeGet('study-log', []);
+  const t = todayStr();
+  if(!log.includes(t)){ log.push(t); storeSet('study-log', log); }
+}
+/* 連續天數：從今天往回數不中斷的天數。今天還沒讀但昨天有也算延續，
+   從昨天起算，免得早上一開站就看到歸零而失去動力。 */
+function studyStreak(){
+  const set = new Set(storeGet('study-log', []));
+  if(!set.size) return 0;
+  let cur = todayStr(), streak = 0;
+  if(!set.has(cur)) cur = addDays(cur, -1);
+  while(set.has(cur)){ streak++; cur = addDays(cur, -1); }
+  return streak;
+}
+function renderReviewStats(){
+  const host = document.getElementById('review-stats');
+  if(!host) return; // 設定頁尚未渲染（例如測試環境剛載入）時跳過
+  const streak = studyStreak();
+  const due = dueVocab().length;
+  const mastered = VOCAB.filter(v => (v.box||1) >= 5).length;
+  host.innerHTML = `
+    <div class="stat-tile flame"><div class="v">${streak}</div><div class="k">🔥 連續天數</div></div>
+    <div class="stat-tile due"><div class="v">${due}</div><div class="k">今天待複習</div></div>
+    <div class="stat-tile mastered"><div class="v">${mastered}</div><div class="k">已掌握（第 5 盒）</div></div>
+    <div class="stat-tile"><div class="v">${VOCAB.length}</div><div class="k">單字總數</div></div>`;
+  renderWeekDots();
+}
+function renderWeekDots(){
+  const host = document.getElementById('week-dots');
+  if(!host) return;
+  const set = new Set(storeGet('study-log', []));
+  const labels = ['日','一','二','三','四','五','六'];
+  let html = '<span class="muted" style="margin-right:4px;">近 7 天：</span>';
+  for(let i=6; i>=0; i--){
+    const dStr = addDays(todayStr(), -i);
+    const dow = new Date(dStr + 'T00:00:00').getDay();
+    html += `<div class="d ${set.has(dStr)?'on':''} ${i===0?'today':''}" title="${dStr}">${labels[dow]}</div>`;
+  }
+  host.innerHTML = html;
+}
+
+function renderReview(){
+  const wrap = document.getElementById('review-area');
+
+  if(!VOCAB.length){
+    wrap.innerHTML = '<div class="empty">單字庫還是空的。先到「單字庫」查幾個字，複習佇列就會自動建立。</div>';
+    return;
+  }
+  if(!REVIEW_QUEUE.length){
+    const nextDates = VOCAB.map(v=>v.nextReview).filter(Boolean).sort();
+    const next = nextDates.find(d => d > todayStr());
+    wrap.innerHTML = `
+      <div class="review-stage">
+        <div class="review-word" style="font-size:26px;">今天的複習做完了</div>
+        <div class="muted" style="margin-top:10px;">
+          ${REVIEW_DONE ? `這一輪過了 ${REVIEW_DONE} 個單字。` : ''}
+          ${next ? `下一批到期日是 ${escapeHtml(next)}。` : '所有單字都已排進未來的複習。'}
+        </div>
+        <div class="review-actions">
+          <button class="btn ghost" data-act="review-cram">不等了，現在再練一輪</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const item = REVIEW_QUEUE[0];
+  const v = VOCAB.find(x=>x.id === item.id);
+  if(!v){ REVIEW_QUEUE.shift(); return renderReview(); }
+
+  const total = REVIEW_QUEUE.length + REVIEW_DONE;
+  const pips = [1,2,3,4,5].map(n=>`<i class="${n <= (v.box||1) ? 'on' : ''}"></i>`).join('');
+  const meta = `
+    <div class="queue-meta">
+      <span>剩餘 <b>${REVIEW_QUEUE.length}</b></span>
+      <span>已完成 <b>${REVIEW_DONE}</b> / ${total}</span>
+      <span>目前在第 <b>${v.box||1}</b> 盒</span>
+    </div>`;
+  const backInfo = `
+    <div class="review-back">
+      <div><b>中文：</b>${escapeHtml(v.meaningZh||'')}</div>
+      <div style="margin-top:4px;"><b>英文：</b>${escapeHtml(v.meaningEn||'')}</div>
+      ${(v.collocations&&v.collocations.length)?`<div style="margin-top:8px;"><b>搭配：</b>${v.collocations.map(c=>`<span class="tag">${escapeHtml(c)}</span>`).join('')}</div>`:''}
+      ${(v.examples&&v.examples.length)?`<div style="margin-top:8px;"><b>例句：</b><ul style="margin:6px 0 0 18px;">${v.examples.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div>`:''}
+    </div>`;
+  const gradeButtons = `
+    <div class="review-actions">
+      <button class="btn danger" data-act="review-grade" data-ok="0">忘記了，回第 1 盒</button>
+      <button class="btn" data-act="review-grade" data-ok="1">記得，進第 ${Math.min(5,(v.box||1)+1)} 盒</button>
+    </div>`;
+
+  if(REVIEW_MODE === 'production'){
+    // 看中文 → 拼英文。production recall 對寫作/口說要用的產出詞彙最有幫助。
+    if(!REVIEW_REVEALED){
+      wrap.innerHTML = meta + `
+        <div class="review-stage">
+          <div class="type-prompt">${escapeHtml(v.meaningZh || '（這個字沒有中文，改用認得模式）')}</div>
+          <div class="type-hint">${escapeHtml(v.partOfSpeech||'')} · 憑記憶拼出英文，拼完按 Enter</div>
+          <div class="box-pips">${pips}</div>
+          <input type="text" id="review-type" class="type-input" autocomplete="off"
+                 autocapitalize="off" spellcheck="false" placeholder="type the word..." />
+          <div class="review-actions">
+            <button class="btn" data-act="review-check">對答案</button>
+          </div>
+        </div>`;
+      const inp = document.getElementById('review-type');
+      if(inp){
+        inp.focus();
+        // 元素每次 render 都是新的，直接綁 Enter 不會重複堆疊
+        inp.addEventListener('keydown', (e)=>{ if(e.key === 'Enter'){ e.preventDefault(); ACTIONS['review-check'](); } });
+      }
+    }else{
+      wrap.innerHTML = meta + `
+        <div class="review-stage">
+          <div class="type-result ${REVIEW_MATCH?'hit':'miss'}">${REVIEW_MATCH ? '✓ 拼對了' : '✗ 你拼的：' + escapeHtml(REVIEW_TYPED || '（空白）')}</div>
+          <div class="type-answer">${escapeHtml(v.word)}</div>
+          <div class="review-ipa">${escapeHtml(v.ipa||'')} ${escapeHtml(v.partOfSpeech||'')}</div>
+          <div class="review-actions" style="margin-top:14px;">
+            <button class="btn ghost" data-act="speak" data-word="${escapeHtml(v.word)}">🔊 發音</button>
+          </div>
+          ${backInfo}
+          ${gradeButtons}
+        </div>`;
+    }
+    return;
+  }
+
+  // recognition：看英文 → 想中文（原本流程）
+  wrap.innerHTML = meta + `
+    <div class="review-stage">
+      <div class="review-word">${escapeHtml(v.word)}</div>
+      <div class="review-ipa">${escapeHtml(v.ipa||'')} ${escapeHtml(v.partOfSpeech||'')}</div>
+      <div class="box-pips">${pips}</div>
+
+      ${REVIEW_REVEALED ? backInfo + gradeButtons : `
+        <div class="review-actions">
+          <button class="btn ghost" data-act="speak" data-word="${escapeHtml(v.word)}">🔊 發音</button>
+          <button class="btn" data-act="review-reveal">看答案</button>
+        </div>
+        <div class="muted" style="margin-top:14px;">先在心裡想過中文意思跟一個例句，再翻面。</div>
+      `}
+    </div>`;
+}
+
+ACTIONS['review-reveal'] = ()=>{ REVIEW_REVEALED = true; renderReview(); };
+/* production 模式：對答案，記下拼字是否正確後翻面自評 */
+ACTIONS['review-check'] = ()=>{
+  const item = REVIEW_QUEUE[0];
+  const v = item && VOCAB.find(x=>x.id === item.id);
+  if(!v) return;
+  const inp = document.getElementById('review-type');
+  REVIEW_TYPED = inp ? inp.value : '';
+  REVIEW_MATCH = normWord(REVIEW_TYPED) === normWord(v.word);
+  REVIEW_REVEALED = true;
+  renderReview();
+};
+ACTIONS['review-cram'] = ()=>{
+  /* 不動 nextReview，純粹把所有單字再過一遍 */
+  REVIEW_QUEUE = VOCAB.slice().sort(()=>Math.random()-0.5).map(v=>({ id:v.id, retried:true, cram:true }));
+  REVIEW_DONE = 0; REVIEW_REVEALED = false;
+  renderReview();
+};
+ACTIONS['review-grade'] = (el)=>{
+  const ok = el.dataset.ok === '1';
+  const item = REVIEW_QUEUE.shift();
+  const v = VOCAB.find(x=>x.id === item.id);
+  if(v && !item.cram){
+    v.reviewCount = (v.reviewCount||0) + 1;
+    if(ok){
+      v.box = Math.min(5, (v.box||1) + 1);
+      v.nextReview = addDays(todayStr(), BOX_INTERVALS[v.box]);
+    }else{
+      v.box = 1;
+      v.lapses = (v.lapses||0) + 1;
+      v.nextReview = todayStr();
+    }
+    storeSet('vocab-library', VOCAB);
+  }
+  /* 答錯的字在同一輪內再出現一次，但最多一次，避免無限迴圈 */
+  if(!ok && !item.retried){
+    REVIEW_QUEUE.push({ id:item.id, retried:true, cram:item.cram });
+  }else{
+    REVIEW_DONE++;
+  }
+  recordStudyDay();               // 有評分就算今天有讀，累積連續天數
+  REVIEW_REVEALED = false; REVIEW_TYPED = ''; REVIEW_MATCH = false;
+  renderReview(); renderBoxDist(); renderNavDue(); renderVocabList(); renderReviewStats();
+};
+
+/* 鍵盤快捷：空白鍵翻面（僅認得模式，拼字模式靠 Enter 對答案），1 = 忘記，2 = 記得 */
+document.addEventListener('keydown', (e)=>{
+  if(!document.getElementById('m-review').classList.contains('active')) return;
+  if(/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
+  if(!REVIEW_QUEUE.length) return;
+  if(e.code === 'Space' && REVIEW_MODE === 'recognition'){ e.preventDefault(); if(!REVIEW_REVEALED) ACTIONS['review-reveal'](); }
+  else if(REVIEW_REVEALED && (e.key === '1' || e.key === '2')){
+    ACTIONS['review-grade']({ dataset:{ ok: e.key === '2' ? '1' : '0' } });
+  }
+});
+
+/* ============================================================
+   擬真考題
+   ============================================================ */
+let CURRENT_QUIZ = [];
+let QUIZ_GRADED = false;
+
+function weakAreaSummary(limit){
+  const counts = {};
+  ERRORS.forEach(e=>{
+    const key = (SKILL_LABEL[e.skill]||e.skill||'其他') + ' - ' + (e.subtype||'未分類');
+    counts[key] = (counts[key]||0) + 1;
+  });
+  return Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0, limit||5);
+}
+
+function renderQuizStamp(){
+  const stats = storeGet('quiz-stats', { correct:0, total:0 });
+  const el = document.getElementById('quiz-stamp').querySelector('.n');
+  el.textContent = stats.total ? Math.round(stats.correct/stats.total*100) + '%' : '–';
+}
+
+document.getElementById('quiz-gen-btn').onclick = async ()=>{
+  const skill   = document.getElementById('quiz-skill').value;
+  const subtype = document.getElementById('quiz-subtype').value.trim();
+  const count   = Math.max(1, Math.min(10, parseInt(document.getElementById('quiz-count').value)||5));
+  const useWeak = document.getElementById('quiz-use-weak').checked;
+  const btn = document.getElementById('quiz-gen-btn');
+
+  btn.disabled = true;
+  setStatus('quiz-status', '正在生成考題...', 'info');
+  try{
+    /* 優先挑複習盒較低的單字，讓考題和弱字對齊 */
+    const wordList = VOCAB.slice()
+      .sort((a,b)=>(a.box||1)-(b.box||1))
+      .slice(0,30).map(v=>v.word).join(', ');
+    const weak = useWeak ? weakAreaSummary(4).map(([k,n])=>`${k}（${n}次）`).join('、') : '';
+
+    const prompt = `你是雅思出題老師。請出 ${count} 題模擬雅思試題，聚焦於「${skill}」技能${subtype?`，特別針對子題型「${subtype}」`:''}。
+${wordList ? `請盡量運用以下單字庫中的單字（優先使用排在前面的，那些是考生最不熟的）：${wordList}` : '考生尚無單字庫，請出一般雅思程度試題。'}
+${weak ? `考生已知的弱項為：${weak}。請讓題目偏向這些弱項。` : ''}
+${skill === 'listening' ? '這是聽力題：請務必填寫 audioScript 欄位，內容是一段 60-110 字、適合朗讀的英文獨白或對話；question 欄位只放問題本身，不要把 audioScript 的內容重複寫進 question。' : ''}
+
+回傳 JSON 陣列，每個元素格式：
+{
+  "skill": "reading|writing|listening|speaking|vocabulary",
+  "subtype": "子題型名稱，例如 True/False/Not Given、同義詞替換、連接詞使用、時態、主旨題等",
+  "question": "題目文字，若為閱讀題請附上簡短段落",
+  "audioScript": "僅聽力題需要，供朗讀的英文逐字稿；其他題型填空字串",
+  "options": ["選項A","選項B","選項C"],
+  "answerIndex": 0,
+  "answer": "正確答案的完整文字",
+  "explanation": "中文詳解"
+}
+重要：選擇題的 answerIndex 必須是 options 陣列中正確選項的索引（從 0 開始），且 answer 必須與該索引的選項文字完全一致。
+開放式問答／寫作／口說題請把 options 設為 null、answerIndex 設為 -1，answer 填參考答案重點。`;
+
+    const quiz = await callGeminiJSON(prompt);
+    CURRENT_QUIZ = Array.isArray(quiz) ? quiz : [];
+    QUIZ_GRADED = false;
+    storeSet('quiz-current', CURRENT_QUIZ);
+    renderQuiz();
+    setStatus('quiz-status','');
+  }catch(e){
+    setStatus('quiz-status', e.message, 'err');
+  }finally{
+    btn.disabled = false;
+  }
+};
+
+function renderQuiz(){
+  const wrap = document.getElementById('quiz-area');
+  if(!CURRENT_QUIZ.length){ wrap.innerHTML = ''; return; }
+
+  wrap.innerHTML = CURRENT_QUIZ.map((q,i)=>{
+    const hasOptions = Array.isArray(q.options) && q.options.length;
+    const isListening = q.skill === 'listening' && q.audioScript;
+    return `
+    <div class="quiz-item" data-qi="${i}">
+      <div class="row" style="justify-content:space-between; margin-bottom:8px;">
+        <div>
+          <span class="tag skill-${escapeHtml(q.skill||'')}">${escapeHtml(q.skill||'')}</span>
+          <span class="tag">${escapeHtml(q.subtype||'')}</span>
+        </div>
+        <div class="muted">Q${i+1}</div>
+      </div>
+
+      ${isListening ? `
+        <div class="audio-box">
+          <div class="row" style="justify-content:space-between;">
+            <div class="muted">聽力音檔（瀏覽器語音朗讀，可重播）</div>
+            <button class="btn ghost" data-act="speak" data-word="${escapeHtml(q.audioScript)}">▶ 播放</button>
+          </div>
+          <div class="muted" id="script-${i}" style="margin-top:10px; display:none; white-space:pre-wrap;"></div>
+        </div>` : ''}
+
+      <div style="white-space:pre-wrap; margin-bottom:10px;">${escapeHtml(q.question||'')}</div>
+
+      <div class="quiz-options" id="qopts-${i}">
+      ${hasOptions ? q.options.map((o,oi)=>`
+        <label class="quiz-opt" style="cursor:pointer;">
+          <input type="radio" name="q${i}" value="${oi}" />
+          <span>${escapeHtml(o)}</span>
+        </label>`).join('')
+      : `<textarea id="qtext-${i}" placeholder="輸入你的作答..."></textarea>`}
+      </div>
+
+      <div id="qresult-${i}" style="margin-top:8px;"></div>
+    </div>`;
+  }).join('')
+  + `<div class="row" style="justify-content:flex-end;"><button class="btn" data-act="quiz-submit">提交作答</button></div>`;
+}
+
+/* 有些回應只給 answer 文字沒給索引，這裡補回來 */
+function resolveAnswerIndex(q){
+  if(typeof q.answerIndex === 'number' && q.answerIndex >= 0) return q.answerIndex;
+  if(!Array.isArray(q.options)) return -1;
+  const norm = s => String(s||'').trim().toLowerCase().replace(/[.,;:!?"']/g,'');
+  const target = norm(q.answer);
+  let idx = q.options.findIndex(o => norm(o) === target);
+  if(idx < 0 && target) idx = q.options.findIndex(o => norm(o).includes(target) || target.includes(norm(o)));
+  return idx;
+}
+
+ACTIONS['quiz-submit'] = ()=>{
+  if(QUIZ_GRADED) return;
+  QUIZ_GRADED = true;
+  let correctCount = 0, totalGraded = 0;
+
+  CURRENT_QUIZ.forEach((q,i)=>{
+    const resultEl = document.getElementById('qresult-'+i);
+    const scriptEl = document.getElementById('script-'+i);
+    if(scriptEl && q.audioScript){
+      scriptEl.style.display = 'block';
+      scriptEl.textContent = '逐字稿：' + q.audioScript;
+    }
+
+    const hasOptions = Array.isArray(q.options) && q.options.length;
+    if(hasOptions){
+      const correctIdx = resolveAnswerIndex(q);
+      const sel = document.querySelector(`input[name="q${i}"]:checked`);
+      const userIdx = sel ? parseInt(sel.value) : -1;
+      totalGraded++;
+
+      document.querySelectorAll(`#qopts-${i} .quiz-opt`).forEach((lbl,oi)=>{
+        if(oi === correctIdx) lbl.classList.add('correct');
+        else if(oi === userIdx) lbl.classList.add('wrong');
+        lbl.querySelector('input').disabled = true;
+      });
+
+      const isCorrect = userIdx >= 0 && userIdx === correctIdx;
+      if(isCorrect) correctCount++;
+
+      const correctText = correctIdx >= 0 ? q.options[correctIdx] : (q.answer || '（AI 未提供）');
+      resultEl.innerHTML = `<div class="muted">${
+        isCorrect ? '✅ 正確'
+        : (userIdx >= 0 ? '❌ 錯誤，正解：' + escapeHtml(correctText)
+                        : '⚠️ 未作答，正解：' + escapeHtml(correctText))
+      }｜解析：${escapeHtml(q.explanation||'')}</div>`;
+
+      if(!isCorrect){
+        ERRORS.push({
+          id: uid(), date: todayStr(), skill:q.skill, subtype:q.subtype, question:q.question,
+          userAnswer: userIdx >= 0 ? q.options[userIdx] : '(未作答)',
+          correctAnswer: correctText, note: q.explanation || ''
+        });
+      }
+    }else{
+      resultEl.innerHTML = `<div class="muted">參考答案重點：${escapeHtml(q.answer||'')}｜解析：${escapeHtml(q.explanation||'')}</div>
+        <div class="row" style="margin-top:8px;">
+          <button class="btn ghost" data-act="quiz-self" data-qi="${i}" data-ok="1">我答對了</button>
+          <button class="btn danger" data-act="quiz-self" data-qi="${i}" data-ok="0">我答錯了，記入筆記本</button>
+        </div>`;
+    }
+  });
+
+  if(totalGraded > 0){
+    const stats = storeGet('quiz-stats', { correct:0, total:0 });
+    stats.correct += correctCount;
+    stats.total   += totalGraded;
+    storeSet('quiz-stats', stats);
+    renderQuizStamp();
+  }
+  storeSet('error-notebook', ERRORS);
+  renderErrors();
+};
+
+ACTIONS['quiz-self'] = (el)=>{
+  const i = parseInt(el.dataset.qi);
+  const ok = el.dataset.ok === '1';
+  const q = CURRENT_QUIZ[i];
+  const stats = storeGet('quiz-stats', { correct:0, total:0 });
+  stats.total += 1;
+  if(ok) stats.correct += 1;
+  storeSet('quiz-stats', stats);
+  renderQuizStamp();
+
+  if(!ok){
+    ERRORS.push({
+      id: uid(), date: todayStr(), skill:q.skill, subtype:q.subtype, question:q.question,
+      userAnswer:'(開放式作答，自評答錯)', correctAnswer:q.answer||'', note:q.explanation||''
+    });
+    storeSet('error-notebook', ERRORS);
+    renderErrors();
+  }
+  el.closest('.row').outerHTML = `<div class="status ${ok?'ok':'info'}" style="margin-top:6px;">${ok?'已計入正確率。':'已記入錯誤筆記本。'}</div>`;
+};
+
+/* ============================================================
+   錯誤筆記本
+   ============================================================ */
+let ERRORS = [];
+const SKILL_LABEL = { reading:'閱讀', writing:'寫作', listening:'聽力', speaking:'口說', vocabulary:'單字' };
+
+function renderErrorsStamp(){
+  document.getElementById('errors-stamp').querySelector('.n').textContent = ERRORS.length;
+}
+function renderErrorsChart(){
+  const el = document.getElementById('errors-chart');
+  if(!ERRORS.length){
+    el.innerHTML = '<div class="empty">還沒有錯誤紀錄。做完考題或手動新增之後，這裡會畫出弱點分布。</div>';
+    return;
+  }
+  const entries = weakAreaSummary(999);
+  const max = entries[0][1];
+  el.innerHTML = entries.map(([label,count])=>`
+    <div class="bar-row">
+      <div class="bar-label">${escapeHtml(label)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(count/max*100).toFixed(0)}%"></div></div>
+      <div class="bar-count">${count}</div>
+    </div>`).join('');
+}
+function renderErrorsList(){
+  const wrap = document.getElementById('errors-list');
+  if(!ERRORS.length){ wrap.innerHTML = ''; return; }
+  wrap.innerHTML = ERRORS.slice().reverse().slice(0,60).map(e=>`
+    <div class="card">
+      <div class="row" style="justify-content:space-between;">
+        <div>
+          <span class="tag skill-${escapeHtml(e.skill||'')}">${escapeHtml(SKILL_LABEL[e.skill]||e.skill||'')}</span>
+          <span class="tag">${escapeHtml(e.subtype||'')}</span>
+          <span class="muted">${escapeHtml(e.date||'')}</span>
+        </div>
+        <button class="icon-btn" data-act="err-del" data-id="${escapeHtml(e.id||'')}">✕</button>
+      </div>
+      ${e.question ? `<div style="margin-top:8px; font-size:13px;">${escapeHtml(String(e.question).slice(0,180))}</div>` : ''}
+      <div class="muted" style="margin-top:6px;">${e.userAnswer? '你的作答：'+escapeHtml(e.userAnswer)+'｜' : ''}${e.correctAnswer? '正解：'+escapeHtml(e.correctAnswer) : ''}</div>
+      ${e.note ? `<div class="muted" style="margin-top:4px;">備註：${escapeHtml(e.note)}</div>` : ''}
+    </div>`).join('')
+    + (ERRORS.length > 60 ? `<div class="muted" style="text-align:center;">僅顯示最近 60 筆，共 ${ERRORS.length} 筆。</div>` : '');
+}
+function renderErrors(){ renderErrorsStamp(); renderErrorsChart(); renderErrorsList(); }
+
+ACTIONS['err-del'] = (el)=>{
+  const i = ERRORS.findIndex(x=>x.id === el.dataset.id);
+  if(i < 0) return;
+  ERRORS.splice(i,1);
+  storeSet('error-notebook', ERRORS);
+  renderErrors();
+};
+
+document.getElementById('err-add-btn').onclick = ()=>{
+  const skill   = document.getElementById('err-skill').value;
+  const subtype = document.getElementById('err-subtype').value.trim();
+  const note    = document.getElementById('err-note').value.trim();
+  if(!subtype && !note) return;
+  ERRORS.push({ id:uid(), date:todayStr(), skill, subtype, note, question:'', userAnswer:'', correctAnswer:'' });
+  storeSet('error-notebook', ERRORS);
+  document.getElementById('err-subtype').value = '';
+  document.getElementById('err-note').value = '';
+  renderErrors();
+};
+
+document.getElementById('errors-analyze-btn').onclick = async ()=>{
+  if(!ERRORS.length){
+    setStatus('errors-analysis-status', '還沒有資料可以分析，先累積一些錯誤紀錄。', 'info');
+    return;
+  }
+  const btn = document.getElementById('errors-analyze-btn');
+  btn.disabled = true;
+  setStatus('errors-analysis-status', 'AI 正在分析弱點...', 'info');
+  try{
+    const summary = weakAreaSummary(999).map(([k,v])=>`${k}: ${v}次`).join('；');
+    const samples = ERRORS.slice(-8).map(e=>`[${SKILL_LABEL[e.skill]||e.skill}/${e.subtype}] ${String(e.note||e.question||'').slice(0,150)}`).join('\n');
+    const prompt = `你是雅思讀書教練，以下是考生聽說讀寫四大領域的錯誤統計與最近錯誤範例，請用繁體中文分析考生在聽力、口說、閱讀、寫作四個部分中，分別哪些子題型較弱、待加強，並給出具體且可執行的加強建議（條列式，200-350字）。
+錯誤統計：${summary}
+最近錯誤範例：
+${samples}`;
+    const text = await callGemini(prompt);
+    document.getElementById('errors-analysis').textContent = text;
+    storeSet('error-analysis', { text, date: todayStr() });
+    setStatus('errors-analysis-status','');
+  }catch(e){
+    setStatus('errors-analysis-status', e.message, 'err');
+  }finally{
+    btn.disabled = false;
+  }
+};
+
+/* ============================================================
+   寫作批改
+   ============================================================ */
+let WRITING_HISTORY = [];
+
+document.getElementById('wr-essay').addEventListener('input', (e)=>{
+  const n = (e.target.value.trim().match(/\S+/g)||[]).length;
+  document.getElementById('wr-wordcount').textContent = n ? `（${n} 字）` : '';
+});
+
+document.getElementById('wr-grade-btn').onclick = async ()=>{
+  const task   = document.getElementById('wr-task').value;
+  const prompt = document.getElementById('wr-prompt').value.trim();
+  const essay  = document.getElementById('wr-essay').value.trim();
+  if(!essay){ setStatus('wr-status', '請先貼上作文內容。', 'err'); return; }
+
+  const btn = document.getElementById('wr-grade-btn');
+  btn.disabled = true;
+  setStatus('wr-status', '正在依 IELTS 評分標準批改...', 'info');
+  try{
+    const p = `你是 IELTS 官方寫作考官，請依照 IELTS Writing Band Descriptors，針對以下 ${task} 作文評分。
+題目：${prompt || '（未提供，請依作文內容合理推測）'}
+考生作文：
+"""
+${essay}
+"""
+回傳 JSON：
+{
+  "taskAchievement": {"band": 6.5, "comment": "針對 Task Achievement/Response 的中文講評"},
+  "coherenceCohesion": {"band": 6.0, "comment": "針對 Coherence and Cohesion（含連接詞使用）的中文講評"},
+  "lexicalResource": {"band": 6.5, "comment": "針對 Lexical Resource 的中文講評"},
+  "grammaticalRange": {"band": 6.0, "comment": "針對 Grammatical Range and Accuracy 的中文講評"},
+  "overallBand": 6.5,
+  "strengths": ["優點1","優點2"],
+  "weaknesses": ["待加強重點1（請指出具體子問題，如連接詞使用薄弱、時態錯誤等）","待加強重點2"],
+  "modelEssay": "針對同樣題目撰寫的 IELTS 7.5-8 分範文全文（英文）"
+}
+注意：overallBand 為四項平均後四捨五入到最接近的 0.5。`;
+
+    const result = await callGeminiJSON(p);
+    renderWritingResult(result);
+
+    /* 只留最近 20 筆完整批改，避免 localStorage 被範文塞爆 */
+    WRITING_HISTORY.push({ date:todayStr(), task, prompt, overallBand:result.overallBand, result });
+    if(WRITING_HISTORY.length > 20) WRITING_HISTORY = WRITING_HISTORY.slice(-20);
+    storeSet('writing-history', WRITING_HISTORY);
+
+    document.getElementById('writing-stamp').querySelector('.n').textContent = result.overallBand ?? '–';
+
+    const criteriaMap = {
+      taskAchievement:'Task Achievement/Response',
+      coherenceCohesion:'Coherence & Cohesion（含連接詞）',
+      lexicalResource:'Lexical Resource',
+      grammaticalRange:'Grammatical Range & Accuracy'
+    };
+    Object.entries(criteriaMap).forEach(([key,label])=>{
+      const c = result[key];
+      if(c && typeof c.band === 'number' && c.band <= 6){
+        ERRORS.push({ id:uid(), date:todayStr(), skill:'writing', subtype:label, note:c.comment, question:prompt, userAnswer:'', correctAnswer:'' });
+      }
+    });
+    storeSet('error-notebook', ERRORS);
+    renderErrors();
+    renderWritingHistory();
+    setStatus('wr-status','');
+  }catch(e){
+    setStatus('wr-status', e.message, 'err');
+  }finally{
+    btn.disabled = false;
+  }
+};
+
+function renderWritingResult(result){
+  const criteria = [
+    ['Task Achievement', result.taskAchievement],
+    ['Coherence & Cohesion', result.coherenceCohesion],
+    ['Lexical Resource', result.lexicalResource],
+    ['Grammar Range', result.grammaticalRange],
+  ];
+  document.getElementById('wr-result').innerHTML = `
+    <div class="card">
+      <div class="row" style="justify-content:space-between; margin-bottom:12px;">
+        <div class="module-sub" style="font-weight:500; color:var(--ink);">批改結果</div>
+        <div class="stamp" style="width:64px; height:64px;"><div class="n" style="font-size:16px;">${result.overallBand ?? '–'}</div><div class="l">BAND</div></div>
+      </div>
+      <div class="band-grid">
+        ${criteria.map(([label,c])=>`<div class="band-box"><div class="b">${c?.band ?? '–'}</div><div class="t">${label}</div></div>`).join('')}
+      </div>
+      ${criteria.map(([label,c])=>`<div style="margin-bottom:8px; font-size:13.5px;"><b>${label}：</b>${escapeHtml(c?.comment||'')}</div>`).join('')}
+      <div class="divider"></div>
+      ${result.strengths?.length ? `<div style="margin-bottom:8px;"><b>優點：</b><ul style="margin:6px 0 0 18px;">${result.strengths.map(s=>`<li>${escapeHtml(s)}</li>`).join('')}</ul></div>`:''}
+      ${result.weaknesses?.length ? `<div style="margin-bottom:8px;"><b>待加強：</b><ul style="margin:6px 0 0 18px;">${result.weaknesses.map(s=>`<li>${escapeHtml(s)}</li>`).join('')}</ul></div>`:''}
+    </div>
+    <div class="card">
+      <div class="module-sub" style="font-weight:500; color:var(--ink); margin-bottom:10px;">範文參考（Band 7.5–8）</div>
+      <div class="model-essay">${escapeHtml(result.modelEssay||'')}</div>
+    </div>`;
+}
+
+function renderWritingHistory(){
+  const wrap = document.getElementById('wr-history');
+  if(!WRITING_HISTORY.length){ wrap.innerHTML = ''; return; }
+  wrap.innerHTML = `<div class="module-sub" style="font-weight:500; color:var(--ink); margin:18px 0 8px;">歷史紀錄（保留最近 20 次）</div>` +
+    WRITING_HISTORY.slice().reverse().map((h,revIdx)=>{
+      const idx = WRITING_HISTORY.length - 1 - revIdx;
+      return `<div class="card">
+        <div class="row" style="justify-content:space-between;">
+          <div class="muted">${escapeHtml(h.date)} · ${escapeHtml(h.task)}</div>
+          <div class="row" style="gap:8px;">
+            <div class="muted">Overall Band ${h.overallBand ?? '–'}</div>
+            <button class="btn ghost" data-act="wr-load" data-i="${idx}" style="padding:4px 10px; font-size:12px;">重看</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+}
+ACTIONS['wr-load'] = (el)=>{
+  const h = WRITING_HISTORY[parseInt(el.dataset.i)];
+  if(h?.result){
+    renderWritingResult(h.result);
+    document.getElementById('wr-result').scrollIntoView({ behavior:'smooth' });
+  }
+};
+
+/* ============================================================
+   讀書計畫
+   ============================================================ */
+let BLANK_PLAN = [];
+let SMART_PLAN = [];
+
+function renderBlankPlan(){
+  const body = document.getElementById('blank-plan-body');
+  document.getElementById('blank-plan-empty').style.display = BLANK_PLAN.length ? 'none' : 'block';
+  body.innerHTML = BLANK_PLAN.map((row,i)=>`
+    <tr>
+      <td><input type="date" value="${escapeHtml(row.date||'')}" data-change="plan-edit" data-i="${i}" data-f="date" /></td>
+      <td><input type="text" value="${escapeHtml(row.tasks||'')}" placeholder="例如：背 20 個單字；一篇 T/F/NG 練習" data-change="plan-edit" data-i="${i}" data-f="tasks" /></td>
+      <td style="text-align:center;"><input type="checkbox" ${row.done?'checked':''} data-change="plan-edit" data-i="${i}" data-f="done" /></td>
+      <td><button class="icon-btn" data-act="plan-del" data-i="${i}">✕</button></td>
+    </tr>`).join('');
+}
+ACTIONS['plan-edit'] = (el)=>{
+  const i = parseInt(el.dataset.i), f = el.dataset.f;
+  if(!BLANK_PLAN[i]) return;
+  BLANK_PLAN[i][f] = (f === 'done') ? el.checked : el.value;
+  storeSet('schedule-blank', BLANK_PLAN);
+};
+ACTIONS['plan-del'] = (el)=>{
+  BLANK_PLAN.splice(parseInt(el.dataset.i), 1);
+  storeSet('schedule-blank', BLANK_PLAN);
+  renderBlankPlan();
+};
+document.getElementById('plan-add-row-btn').onclick = ()=>{
+  BLANK_PLAN.push({ date:todayStr(), tasks:'', done:false });
+  storeSet('schedule-blank', BLANK_PLAN);
+  renderBlankPlan();
+};
+
+function renderSmartPlan(){
+  const wrap = document.getElementById('sg-result');
+  if(!SMART_PLAN.length){ wrap.innerHTML = ''; return; }
+  wrap.innerHTML = `<div class="card">
+    <div class="module-sub" style="font-weight:500; color:var(--ink); margin-bottom:10px;">AI 生成計畫</div>
+    <table class="plan">
+      <thead><tr><th style="width:110px;">日期</th><th style="width:90px;">主要領域</th><th>任務</th><th style="width:70px;">時長</th></tr></thead>
+      <tbody>
+      ${SMART_PLAN.map(d=>`<tr>
+        <td>${escapeHtml(d.date||'')}</td>
+        <td>${escapeHtml(d.focus||'')}</td>
+        <td>${(d.tasks||[]).map(t=>escapeHtml(t)).join('；')}</td>
+        <td>${d.durationMinutes ? d.durationMinutes+'分' : ''}</td>
+      </tr>`).join('')}
+      </tbody>
+    </table>
+    <div class="row" style="justify-content:flex-end; margin-top:12px;">
+      <button class="btn ghost" data-act="plan-copy">複製到空白計畫表</button>
+    </div>
+  </div>`;
+}
+ACTIONS['plan-copy'] = ()=>{
+  SMART_PLAN.forEach(d=>{
+    if(BLANK_PLAN.some(r => r.date === d.date && r.tasks === (d.tasks||[]).join('; '))) return;
+    BLANK_PLAN.push({ date:d.date, tasks:(d.tasks||[]).join('; '), done:false });
+  });
+  BLANK_PLAN.sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  storeSet('schedule-blank', BLANK_PLAN);
+  renderBlankPlan();
+  setStatus('sg-status', '已複製到上方空白計畫表。', 'ok');
+  setTimeout(()=>setStatus('sg-status',''), 2500);
+};
+
+document.getElementById('sg-generate-btn').onclick = async ()=>{
+  const examDate    = document.getElementById('sg-exam-date').value;
+  const currentBand = document.getElementById('sg-current-band').value;
+  const targetBand  = document.getElementById('sg-target-band').value;
+  const hours       = document.getElementById('sg-hours').value;
+  if(!examDate){ setStatus('sg-status', '請先選擇應試日期。', 'err'); return; }
+
+  const today = todayStr();
+  const daysLeft = Math.max(1, Math.round((new Date(examDate) - new Date(today)) / 86400000));
+  document.getElementById('schedule-stamp').querySelector('.n').textContent = daysLeft;
+
+  const btn = document.getElementById('sg-generate-btn');
+  btn.disabled = true;
+  setStatus('sg-status', '正在依你的弱點生成讀書計畫...', 'info');
+  try{
+    const weak = weakAreaSummary(5).map(([k])=>k).join('、') || '尚無明顯弱點紀錄，請均衡安排聽說讀寫';
+    const planDays = Math.min(daysLeft, 30);
+    const prompt = `你是雅思讀書規劃教練。今天是 ${today}，考生預計於 ${examDate} 應試，距離考試還有 ${daysLeft} 天。
+考生目前程度約 Band ${currentBand||'未知'}，目標 Band ${targetBand||'未知'}，每天可讀書 ${hours||'2'} 小時。
+考生已知弱項：${weak}。
+考生的單字庫目前有 ${VOCAB.length} 個字，今天到期待複習 ${dueVocab().length} 個。
+
+請規劃從今天 ${today} 起連續 ${planDays} 天的每日計畫，日期必須連續且不可重複。
+${daysLeft > 30 ? `（總天數 ${daysLeft} 天較長，先規劃前 30 天即可，考前再重新生成。）` : '最後 3 天請安排總複習與完整模擬考。'}
+每天請安排 2-4 個具體任務，總時長貼近 ${hours||'2'} 小時，並固定包含一項單字複習。
+
+回傳 JSON 陣列，每個元素：
+{"date":"YYYY-MM-DD","focus":"當日主要領域（聽力/口說/閱讀/寫作/單字/總複習）","tasks":["具體任務1","具體任務2"],"durationMinutes":120}`;
+
+    const plan = await callGeminiJSON(prompt);
+    SMART_PLAN = Array.isArray(plan) ? plan : [];
+    storeSet('schedule-smart', SMART_PLAN);
+    renderSmartPlan();
+    setStatus('sg-status','');
+  }catch(e){
+    setStatus('sg-status', e.message, 'err');
+  }finally{
+    btn.disabled = false;
+  }
+};
+
+/* ============================================================
+   設定 · 備份 · 還原
+   ============================================================ */
+document.getElementById('set-toggle-key').onclick = ()=>{
+  const el = document.getElementById('set-apikey');
+  const showing = el.type === 'password';
+  el.type = showing ? 'text' : 'password';
+  document.getElementById('set-toggle-key').textContent = showing ? '隱藏' : '顯示';
+};
+document.getElementById('set-load-models').onclick = ()=> fetchModels(false);
+
+document.getElementById('set-save-btn').onclick = async ()=>{
+  const keyChanged = SETTINGS.apiKey !== document.getElementById('set-apikey').value.trim();
+  SETTINGS.apiKey = document.getElementById('set-apikey').value.trim();
+  SETTINGS.model  = document.getElementById('set-model').value;
+  SETTINGS.accent = document.getElementById('set-accent').value;
+  storeSet('settings', SETTINGS);
+  setStatus('set-status', '設定已儲存。', 'ok');
+  setTimeout(()=>setStatus('set-status',''), 2500);
+
+  /* 換了金鑰或還沒有模型清單，就順手抓一次，免得使用者忘了按 */
+  if(SETTINGS.apiKey && (keyChanged || !storeGet('model-list', []).length)){
+    await fetchModels(false);
+  }
+  refreshKeyWarning();
+};
+
+document.getElementById('cloud-register-btn').onclick = ()=> cloudAuth('register');
+document.getElementById('cloud-login-btn').onclick    = ()=> cloudAuth('login');
+document.getElementById('cloud-logout-btn').onclick   = ()=> cloudLogout();
+document.getElementById('cloud-autosync').onchange = (e)=>{
+  CLOUD.autoSync = e.target.checked;
+  saveCloudSettings();
+  if(CLOUD.autoSync) scheduleCloudPush(); // 一打開就把目前變更推上去
+};
+document.getElementById('cloud-push-btn').onclick = ()=> cloudPush();
+document.getElementById('cloud-pull-btn').onclick = ()=>{
+  if(confirm('從雲端下載會覆蓋這台裝置目前的資料，確定要繼續嗎？')) cloudPull(false);
+};
+
+/* 匯出 / 匯入 */
+document.getElementById('data-export-btn').onclick = ()=>{
+  const payload = {
+    _app: 'ielts-study-desk',
+    _version: 2,
+    _exportedAt: new Date().toISOString(),
+    state: APP_STATE
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `ielts-backup-${todayStr()}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  setStatus('data-status', '備份檔已下載，建議放到雲端硬碟保存。', 'ok');
+  setTimeout(()=>setStatus('data-status',''), 4000);
+};
+document.getElementById('data-import-btn').onclick = ()=> document.getElementById('data-import-file').click();
+document.getElementById('data-import-file').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  try{
+    const parsed = JSON.parse(await file.text());
+    const incoming = parsed.state || parsed.record || parsed;
+    if(typeof incoming !== 'object' || incoming === null) throw new Error('bad');
+    const counts = [
+      `單字 ${(incoming['vocab-library']||[]).length} 筆`,
+      `錯誤紀錄 ${(incoming['error-notebook']||[]).length} 筆`,
+      `寫作紀錄 ${(incoming['writing-history']||[]).length} 筆`
+    ].join('、');
+    if(!confirm(`即將還原：${counts}。\n\n這會覆蓋目前這台裝置上的所有資料，確定要繼續嗎？`)) return;
+    delete incoming._app; delete incoming._version; delete incoming._exportedAt; delete incoming._updatedAt;
+    APP_STATE = incoming;
+    saveLocalState();
+    await rerenderAll();
+    setStatus('data-status', '已從備份檔還原。', 'ok');
+  }catch(err){
+    setStatus('data-status', '這個檔案讀不出來，請確認是本站匯出的 .json 備份檔。', 'err');
+  }finally{
+    e.target.value = '';
+  }
+});
+
+ACTIONS['clear-data'] = (el)=>{
+  const key = el.dataset.clear;
+  if(!confirm('確定要清除嗎？這個動作無法復原，建議先匯出備份。')) return;
+  delete APP_STATE[key];
+  saveLocalState();
+  rerenderAll();
+};
+document.querySelectorAll('[data-clear]').forEach(b=>{
+  b.dataset.act = 'clear-data';
+});
+
+/* ============================================================
+   初始化
+   ============================================================ */
+function refreshKeyWarning(){
+  if(!SETTINGS.apiKey){
+    showGlobalWarning('還沒設定 Gemini API 金鑰，AI 功能都不能用。請到「設定」頁貼上金鑰。');
+  }else if(!SETTINGS.model){
+    showGlobalWarning('已有金鑰，但還沒選模型。請到「設定」頁按「載入可用模型」。');
+  }else{
+    showGlobalWarning('');
+  }
+}
+
+async function rerenderAll(){
+  loadSettings();
+  VOCAB           = storeGet('vocab-library', []);
+  ERRORS          = storeGet('error-notebook', []);
+  WRITING_HISTORY = storeGet('writing-history', []);
+  BLANK_PLAN      = storeGet('schedule-blank', []);
+  SMART_PLAN      = storeGet('schedule-smart', []);
+  CURRENT_QUIZ    = storeGet('quiz-current', []);
+
+  if(migrateVocab(VOCAB)) storeSet('vocab-library', VOCAB);
+  buildReviewQueue();
+
+  const lastAnalysis = storeGet('error-analysis', null);
+  document.getElementById('errors-analysis').textContent = lastAnalysis?.text || '';
+
+  renderVocabStamp(); renderVocabList();
+  applyReviewModeUI();
+  renderBoxDist(); renderNavDue(); renderReview(); renderReviewStats();
+  renderQuiz(); renderQuizStamp();
+  renderErrors();
+  renderBlankPlan(); renderSmartPlan();
+  renderWritingHistory();
+  document.getElementById('writing-stamp').querySelector('.n').textContent =
+    WRITING_HISTORY.length ? (WRITING_HISTORY[WRITING_HISTORY.length-1].overallBand ?? '–') : '–';
+  document.getElementById('storage-usage').textContent =
+    `目前已使用約 ${storageUsage()} KB（瀏覽器上限約 5000 KB）。`;
+}
+
+(async function init(){
+  loadLocalState();
+  loadCloudSettings();
+  loadReviewMode();
+  updateCloudUI();
+
+  if(CLOUD.autoSync && cloudLoggedIn()){
+    setCloudStatus('正在從雲端載入資料...', 'info');
+    await cloudPull(true); // 內含 rerenderAll
+  }else{
+    await rerenderAll();
+  }
+
+  /* 有金鑰但還沒抓過清單就自動抓一次。寫死的模型名稱撐不了幾個月，
+     與其猜一個可能已經退役的預設值，不如開站時問一次 API */
+  if(SETTINGS.apiKey && !storeGet('model-list', []).length){
+    await fetchModels(true);
+  }
+  refreshKeyWarning();
+})();
+</script>
+</body>
+</html>
