@@ -804,6 +804,18 @@ function cloudLogout(){
   setCloudStatus('已登出。本機資料仍在，重新登入即可再同步。', 'ok');
 }
 
+/* 上雲的 state 一律剝掉 Gemini 金鑰。
+   金鑰是使用者自備的憑證,不是學習進度——約束 11「混進憑證等於外洩」同樣適用。
+   settings.apiKey 剛好住在 APP_STATE 裡,所以不特別處理就會跟著整包傳上 D1。 */
+function outgoingState(){
+  const out = { ...APP_STATE };
+  if(out.settings){
+    const { apiKey, ...rest } = out.settings;
+    out.settings = rest;
+  }
+  return out;
+}
+
 async function cloudPush(){
   if(!cloudLoggedIn()){ setCloudStatus('請先登入。', 'err'); return; }
   setCloudStatus('正在上傳...', 'info');
@@ -811,7 +823,7 @@ async function cloudPush(){
     const res = await fetch(`${CLOUD_API}/progress`, {
       method:'PUT',
       headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${CLOUD.token}` },
-      body: JSON.stringify({ state: APP_STATE, version: CLOUD.version })
+      body: JSON.stringify({ state: outgoingState(), version: CLOUD.version })
     });
     if(res.status === 409){
       // 雲端有更新的版本（多半是另一台裝置改過）。採用雲端版並大聲提醒，不靜默蓋掉
@@ -854,7 +866,13 @@ async function cloudPull(silent){
 
 /* 把雲端資料寫進本機並重繪。version 一起更新，下次上傳才對得上 */
 async function applyCloudState(state, version){
+  /* 雲端不存金鑰(見 outgoingState),所以套用遠端資料時要保住本機這一份,
+     否則同步一次就會把使用者剛貼上的金鑰清掉、AI 功能突然全掛。 */
+  const localApiKey = (APP_STATE.settings || {}).apiKey || '';
   APP_STATE = state || {};
+  if(localApiKey){
+    APP_STATE.settings = Object.assign({}, APP_STATE.settings || {}, { apiKey: localApiKey });
+  }
   CLOUD.version = version || 0;
   CLOUD.lastSync = new Date().toISOString();
   saveLocalState();

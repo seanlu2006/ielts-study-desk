@@ -3,7 +3,7 @@
   "private": true,
   "description": "建置與測試用。網站本身無 runtime 相依，jsdom 只給 tests/ 用",
   "scripts": {
-    "test": "node tests/01-core.test.js && node tests/02-storage-backup.test.js && node tests/03-gemini-models.test.js && node tests/04-review-dashboard.test.js && node tests/05-vocab-preview.test.js",
+    "test": "node tests/01-core.test.js && node tests/02-storage-backup.test.js && node tests/03-gemini-models.test.js && node tests/04-review-dashboard.test.js && node tests/05-vocab-preview.test.js && node tests/06-cloud-key-privacy.test.js",
     "build": "node build.mjs",
     "dev": "node build.mjs && wrangler pages dev dist",
     "deploy": "node build.mjs && wrangler pages deploy dist"

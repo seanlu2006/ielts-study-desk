@@ -16,7 +16,7 @@
 - `functions/api/*.js` ＝ 後端 API（register / login / progress + 共用 `_lib.js`）
 - `schema.sql`、`wrangler.toml` ＝ D1 建表與部署設定
 - `build.mjs` ＝ 產生 `dist/`（`ielts.html` → `index.html` + `functions/`）
-- `tests/*.test.js` ＝ jsdom 測試
+- `tests/*.test.js` ＝ jsdom 測試（六支，104 個檢查）
 - `DEPLOY-backend.md` ＝ 給非後端背景的人的逐步部署手冊
 
 部署：`npm run deploy`（＝ `node build.mjs && wrangler pages deploy dist`，細節見 DEPLOY-backend.md）。
@@ -143,6 +143,14 @@ Gemini (模型探索 / callGemini / callGeminiJSON)
     `token` 存 `ielts-cloud-settings`、`review-mode` 存 `ielts-review-mode`。
     APP_STATE 會被同步上雲、被備份匯出，混進憑證等於外洩、混進偏好等於跨裝置互相打架。
 
+    ⚠️ **`settings.apiKey` 是這條規則的例外，而且曾經因此外洩過。**
+    Gemini 金鑰因為歷史因素住在 `APP_STATE.settings` 裡，所以 2026-09 之前，
+    只要使用者開了自動同步，金鑰就會跟著整包 state 被 PUT 上 D1。
+    現在 `cloudPush()` 一律經過 `outgoingState()` 把 `apiKey` 剝掉，
+    `applyCloudState()` 則負責在套用雲端資料時保住本機那一份（雲端沒有它）。
+    **不要把 `cloudPush()` 改回直接送 `APP_STATE`。** `tests/06-cloud-key-privacy.test.js` 在守這件事。
+    （備份匯出仍然帶著金鑰，那是使用者自己的檔案，屬於刻意保留。）
+
 12. **後端密語只存雜湊，token 用伺服器密鑰簽。**
     `_lib.js` 用 PBKDF2 加鹽雜湊密語、HMAC 簽 token；`TOKEN_SECRET` 走 `wrangler pages secret`，
     不進版本庫。別把密語存明文，也別把密鑰寫進 `wrangler.toml`。
@@ -151,11 +159,11 @@ Gemini (模型探索 / callGemini / callGeminiJSON)
 
 ## 測試
 
-`tests/*.test.js` 五支，用 jsdom 把 `ielts.html` 整頁跑起來，共 **94** 個檢查。
+`tests/*.test.js` 六支，用 jsdom 把 `ielts.html` 整頁跑起來，共 **104** 個檢查。
 
 ```bash
 npm install
-npm test   # 依編號依序跑 tests/01 ~ tests/05
+npm test   # 依編號依序跑 tests/01 ~ tests/06
 ```
 
 - `tests/01-core.test.js`（29）：資料遷移、XSS、撇號單字、複習升降盒、佇列終止、考題判分、計畫表編輯
@@ -163,8 +171,9 @@ npm test   # 依編號依序跑 tests/01 ~ tests/05
 - `tests/03-gemini-models.test.js`（16）：模型探索與過濾、退役模型自動替換、429/404 錯誤分類
 - `tests/04-review-dashboard.test.js`（22）：反向測驗（拼字對錯、翻面自評、升盒）、學習儀表板、連續天數的連續/中斷/延續邏輯
 - `tests/05-vocab-preview.test.js`（19）：單字庫查詢/加入拆兩步（查詢只預覽、加入才寫入、捨棄、重複字防呆）
+- `tests/06-cloud-key-privacy.test.js`（10）：Gemini 金鑰不隨雲端同步上傳、套用雲端資料時不清掉本機金鑰
 
-**改完一定要五支都跑過（`npm test`）。** 測試會 mock `fetch`、`localStorage`、`speechSynthesis`，不會真的打 API。
+**改完一定要六支都跑過（`npm test`）。** 測試會 mock `fetch`、`localStorage`、`speechSynthesis`，不會真的打 API。
 每支都用 `__dirname` 定位 `ielts.html`，所以從任何目錄 `node tests/xx.test.js` 都跑得起來。
 
 > ⚠️ 前任交接說「53 全過」其實是假綠燈：jsdom 24 沒實作 `File.text()`，`02-storage-backup` 的匯入 4 條一直 FAIL。
@@ -191,7 +200,8 @@ npm test   # 依編號依序跑 tests/01 ~ tests/05
 - 衝突時本機那次未同步的變更會被雲端版覆蓋（有橫幅提醒、非靜默）。之後可加「保留本機 / 用雲端」的選擇 UI
 - 口說模組沒有實作。需要 `MediaRecorder` 錄音再送 Gemini，工程量大一個量級
 - `localStorage` 上限約 5MB；雲端 `state` 上限 4MB（後端擋）。寫作紀錄已限 20 筆，長期重度使用仍可能撞牆，屆時要遷 IndexedDB
-- Gemini 金鑰仍在瀏覽器（使用者自備）。這次只搬「進度」到後端，沒搬金鑰。要藏金鑰得再開一個 `/api/gemini` proxy 端點
+- Gemini 金鑰仍在瀏覽器（使用者自備），**且已確保不會隨雲端同步上傳**（見約束 11）。
+  要完全不讓金鑰出現在前端，得再開一個 `/api/gemini` proxy 端點並改由後端保管金鑰——那是另一個量級的改動
 
 **下一步優先做**
 
