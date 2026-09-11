@@ -74,7 +74,7 @@ npm run dev # 前端 + Pages Functions + 本機 D1
 
 | 層 | 選用 |
 |---|---|
-| 前端 | 單一 HTML 檔，原生 JS，無框架、無建置步驟、無 runtime 相依 |
+| 前端 | 單一 HTML 檔，原生 JS，無框架、無打包器、無 runtime 相依。`build.mjs` 只有十五行，把 `ielts.html` 與 `functions/` 複製進 `dist/` 供部署 |
 | 本機儲存 | `localStorage`。會同步的整包進度放在單一 key `ielts-app-state`；登入 token 與複習模式偏好刻意各自獨立存一把 key。支援 JSON 匯出／匯入 |
 | 後端（選用） | Cloudflare Pages Functions + D1（SQLite） |
 | AI | Google Gemini，由使用者自備金鑰、瀏覽器直接呼叫 |

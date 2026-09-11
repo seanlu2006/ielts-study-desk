@@ -69,7 +69,7 @@ Deploying your own copy — creating the D1 database, loading the schema, settin
 
 | Layer | Choice |
 |---|---|
-| Frontend | one HTML file, vanilla JS — no framework, no build step, no runtime dependencies |
+| Frontend | one HTML file, vanilla JS — no framework, no bundler, no runtime dependencies. `build.mjs` is fifteen lines that copy `ielts.html` and `functions/` into `dist/` for deployment. |
 | Local storage | `localStorage`. The synced state lives under one key, `ielts-app-state`; the login token and the review-mode preference are kept in separate keys on purpose. JSON export/import. |
 | Backend (optional) | Cloudflare Pages Functions + D1 (SQLite) |
 | AI | Google Gemini, called straight from the browser with the user's own key |
