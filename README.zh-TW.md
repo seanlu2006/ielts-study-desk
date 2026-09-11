@@ -1,12 +1,14 @@
 # 考場筆記 · IELTS Study Desk
 
+[English](README.md)
+
 把查過的單字、答錯的題目和寫作回饋收在同一個地方，並自動排出明天該複習什麼。
 
 **線上版：https://ielts-study-desk.pages.dev** — 不用註冊就能開始用，資料存在你自己的瀏覽器。
 
 ![單字庫](docs/screenshot-vocab.png)
 
-查過的單字連同音標、搭配詞、例句一起存進單字庫，並自動排進複習佇列。
+先出預覽，按「加入單字庫」確認後，單字才連同音標、搭配詞、例句存進單字庫，並自動排進複習佇列。
 
 ![今日複習](docs/screenshot-review.png)
 
@@ -27,7 +29,7 @@
 ## 核心功能
 
 - **查單字自動變複習卡** — 輸入英文單字，Gemini 回 IPA、中英字義、搭配詞、例句、同義字與大約的 band 分數。先出預覽，按「加入單字庫」才真的存進去並排進複習佇列（避免查錯字污染單字庫）。
-- **Leitner 五盒間隔重複** — 答對往上升一盒、答錯直接掉回第一盒。五個盒子的複習間隔是 1 / 2 / 4 / 7 / 14 天。
+- **Leitner 五盒間隔重複** — 答對往上升一盒、答錯不管原本在第幾盒都掉回第一盒。五個盒子的複習間隔是 1 / 2 / 4 / 7 / 14 天；答錯的字當天就再到期，而且同一輪裡會再出現一次。
 - **兩種複習模式** — 「認得」看英文想中文；「反向測驗」看中文拼英文，逼出 production recall，不是看到就覺得自己會了。
 - **錯題自動進錯誤筆記本** — 練習題答錯、作文某項評分偏低，都會自動記下技能與子題型，畫成弱點分布圖，可以再叫 AI 針對分布做診斷。
 - **依單字庫出題** — 用你自己的單字和弱項生成閱讀、寫作、聽力、口說題；聽力題用瀏覽器的 Web Speech API 唸出來，可切英式／美式腔。
@@ -46,15 +48,19 @@ open ielts.html          # Linux 用 xdg-open，Windows 用 start
 前端是單一 HTML 檔，雙擊就會開，介面與本機資料（單字庫、複習、錯題本）都能用。
 但 `/api` 在 `file://` 底下不存在，所以雲端同步會停用；要完整跑就用下面的 `npm run dev`。
 
-要跑完整環境（前端 + API + 本機 D1）或跑測試：
+跑測試只需要 devDependencies，不用碰資料庫：
 
 ```bash
 npm install
+npm test    # 104 個 jsdom 檢查，不會真的打 API
+```
 
-# 建本機 D1 測試庫（只有第一次要做）
+要跑完整環境（前端 + API + 本機 D1）：
+
+```bash
+# 建本機 D1（只有第一次要做；npm test 不需要）
 npx wrangler d1 execute ielts-progress --file=./schema.sql --local
 
-npm test    # 94 個 jsdom 檢查，不會真的打 API
 npm run dev # 前端 + Pages Functions + 本機 D1
 ```
 
@@ -69,18 +75,18 @@ npm run dev # 前端 + Pages Functions + 本機 D1
 | 層 | 選用 |
 |---|---|
 | 前端 | 單一 HTML 檔，原生 JS，無框架、無建置步驟、無 runtime 相依 |
-| 本機儲存 | `localStorage`（單一 key `ielts-app-state`），支援 JSON 匯出／匯入 |
+| 本機儲存 | `localStorage`。會同步的整包進度放在單一 key `ielts-app-state`；登入 token 與複習模式偏好刻意各自獨立存一把 key。支援 JSON 匯出／匯入 |
 | 後端（選用） | Cloudflare Pages Functions + D1（SQLite） |
 | AI | Google Gemini，由使用者自備金鑰、瀏覽器直接呼叫 |
 | 語音 | Web Speech API |
-| 測試 | jsdom，94 個檢查 |
+| 測試 | jsdom，104 個檢查 |
 
 ### 幾個選擇背後的理由
 
 **為什麼是單一 HTML 檔，不用 React？**
 這是我每天自己要用的工具，不是要長期維護的產品。加上框架就多出建置步驟、依賴更新和 `node_modules`；
 單檔的好處是可以直接 double-click 打開、飛機上沒網路也能複習單字、整份丟給 AI 讀還讀得完。
-代價很實在：2,200 行 CSS + JS 全擠在一個檔案裡，再長下去就得拆，目前還沒到那個點。
+代價很實在：2,249 行 HTML + CSS + JS 全擠在一個檔案裡，再長下去就得拆，目前還沒到那個點。
 
 **為什麼是 Cloudflare Pages + D1，不是 Node + Postgres？**
 需求只有「幾個 API 端點 + 一張使用者表 + 一張進度表」，架一台真的伺服器完全過剩。
@@ -90,7 +96,7 @@ Pages Functions 跟前端同源，所以完全不用處理 CORS；D1 是 SQLite 
 
 **為什麼使用者要自備 Gemini 金鑰？**
 我不想幫所有使用者付 API 費用，也不想存別人的金鑰。金鑰留在使用者瀏覽器、直接打 Google，
-我的後端從頭到尾看不到它。代價是金鑰暴露在前端，所以要靠 Google Cloud Console 的 HTTP referrer 限制擋住盜用。
+我的後端從頭到尾看不到它，同步上雲前也會把金鑰從 state 裡剝掉。代價是金鑰暴露在前端，所以要靠 Google Cloud Console 的 HTTP referrer 限制擋住盜用。
 
 **為什麼同步要做樂觀鎖？**
 上一版用 JSONBin 做同步，是 last-write-wins——手機上複習完，回到電腦一存就把手機的進度蓋掉了。
@@ -131,7 +137,7 @@ functions/api/
   ├── register.js       建帳號，成功回一張 token
   ├── login.js          驗密語，成功回 token
   └── progress.js       進度讀寫，PUT 走樂觀鎖，衝突回 409
-tests/                  jsdom 測試，用 npm test 依編號跑，共 94 個檢查
+tests/                  jsdom 測試，用 npm test 依編號跑，共 104 個檢查
 schema.sql              D1 建表：users + progress
 wrangler.toml           Cloudflare Pages 與 D1 綁定設定
 build.mjs               產生 dist/：ielts.html 改名成 index.html + 複製 functions/
@@ -141,10 +147,10 @@ CLAUDE.md               給 AI 協作者的開發約束（踩過的坑都記在�
 
 ## 已知限制
 
-- **口說模組沒有實作。** 介面上有入口，但要真的能用得接 `MediaRecorder` 錄音再送去評分，工程量比其他模組大一個量級，還沒動。
-- **後端沒有自動化測試。** 94 個測試全部涵蓋前端；註冊、登入、樂觀鎖衝突目前只能用 `npm run dev` 手動驗。這是我自己覺得最該補的一塊。
+- **口說沒有真的做。** 考題產生器可以出口說題、錯誤筆記本也有口說分類，但兩邊都只到文字為止——沒有任何地方會錄你的聲音或評分。要真的能用得接 `MediaRecorder` 錄音再送去評分，工程量比其他模組大一個量級，還沒動。
+- **後端沒有自動化測試。** 104 個測試全部涵蓋前端；註冊、登入、樂觀鎖衝突目前只能用 `npm run dev` 手動驗。這是我自己覺得最該補的一塊。
 - **同步衝突是「雲端優先 + 大聲提醒」，不是真的合併。** 兩台裝置同時改的話，後上傳的那台會被要求採用雲端版，本機那次變更會不見（有橫幅提醒，不是靜默）。要做得更好得寫欄位級 merge。
-- **手機版側邊欄在約 375px 寬的螢幕上會擠壞**，中文字直排、產生橫向捲軸。`@media (max-width:800px)` 那段要重寫。
+- **手機版在約 400px 以下會擠壞。** 375px 時側邊欄變成橫條，每個導覽項目的中文被壓成一字一行直排，頁首幾乎吃掉整個第一屏才看得到內容。`@media (max-width:800px)` 那段要重寫。
 
 ## License
 
