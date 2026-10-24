@@ -137,7 +137,6 @@ CLAUDE.md               constraints for AI collaborators (every trap I've hit is
 - **There's no speaking practice.** The quiz generator produces speaking prompts and the error notebook has a speaking category, but both are text only — nothing records or scores your voice. That needs `MediaRecorder` plus a grading call that accepts audio — an order of magnitude more work than the other modules, so I haven't built it.
 - **The backend has no automated tests.** All 104 checks cover the frontend; registration, login and the 409 conflict path are verified by hand with `npm run dev`. This is the gap I most want to close.
 - **Sync conflicts are "cloud wins, loudly", not a real merge.** If two devices edit at once, the later upload is told to adopt the cloud version and that device's unsynced change is lost — with a banner, not silently. Doing better means field-level merging.
-- **The mobile layout breaks below roughly 400px.** At 375px the sidebar collapses into a horizontal strip where each nav label wraps to one character per line, and the header eats most of the space above the fold. The `@media (max-width:800px)` block needs rewriting.
 
 ## License
 
