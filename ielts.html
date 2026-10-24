@@ -149,9 +149,29 @@
   ::placeholder{color:#AEB3A8;}
   a{color:var(--teal);}
   @media (max-width:800px){
+    /* 手機：側欄改成黏在頂端的工具列。
+       注意 .sidebar 本身要維持 column——改成 row 會把標題、頁籤、頁尾
+       三塊擠成橫排，中文就會變成一個字一行。只有 .nav 需要橫排。 */
     .app{flex-direction:column;}
-    .sidebar{width:100%; height:auto; position:relative; flex-direction:row; overflow-x:auto;}
-    .nav{flex-direction:row;}
+    .sidebar{
+      width:100%; height:auto; flex-direction:column; gap:12px;
+      padding:14px 16px; position:sticky; top:0; z-index:20;
+    }
+    .brand{font-size:18px;}
+    .brand small{display:none;}
+    .nav{
+      flex-direction:row; gap:6px; margin-top:0;
+      overflow-x:auto; overscroll-behavior-x:contain;
+      scrollbar-width:none; -ms-overflow-style:none;
+    }
+    .nav::-webkit-scrollbar{display:none;}
+    .nav button{flex:0 0 auto; white-space:nowrap; padding:9px 12px;}
+    /* 右緣淡出，暗示後面還有頁籤可以滑 */
+    .nav{
+      -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent);
+      mask-image:linear-gradient(90deg,#000 calc(100% - 26px),transparent);
+    }
+    .sidebar-foot{display:none;}
     .main{padding:24px 18px;}
     .band-grid{grid-template-columns:repeat(2,1fr);}
   }
@@ -1084,6 +1104,9 @@ function gotoModule(name){
   document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active', b.dataset.m === name));
   document.querySelectorAll('.module').forEach(m=>m.classList.remove('active'));
   document.getElementById('m-'+name).classList.add('active');
+  // 手機版頁籤是橫向捲動的，被選到的那個可能在畫面外，拉進來
+  const activeBtn = document.querySelector('.nav button.active');
+  if(activeBtn) activeBtn.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'nearest' });
   window.scrollTo({ top:0, behavior:'smooth' });
 }
 document.getElementById('nav').addEventListener('click', (e)=>{
