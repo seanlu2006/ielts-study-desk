@@ -7,9 +7,9 @@
 一個雅思讀書網站。前端仍是**單一 HTML 檔，無 build step、無框架、無 npm 相依**，
 可離線開啟；使用者自備 Gemini API 金鑰，瀏覽器直接呼叫 Google API。
 
-**2026-08 起多了一個「選用」的後端**：Cloudflare Pages Functions + D1，用來做多人的跨裝置進度儲存。
-不登入時前端照舊全靠 localStorage，一切離線可用；登入後才會把整包進度同步到雲端。
-所以「無後端」這條已不再絕對——是刻意的取捨，原因見下方「為什麼加後端」。
+另有一個**選用**的後端：Cloudflare Pages Functions + D1，用來做多人的跨裝置進度儲存。
+不登入時前端全靠 localStorage，一切離線可用；登入後才會把整包進度同步到雲端。
+後端是刻意的取捨，原因見下方「為什麼加後端」。
 
 檔案：
 - `ielts.html`（約 2200 行，含 CSS 與 JS）＝ 前端全部
@@ -176,8 +176,7 @@ npm test   # 依編號依序跑 tests/01 ~ tests/06
 **改完一定要六支都跑過（`npm test`）。** 測試會 mock `fetch`、`localStorage`、`speechSynthesis`，不會真的打 API。
 每支都用 `__dirname` 定位 `ielts.html`，所以從任何目錄 `node tests/xx.test.js` 都跑得起來。
 
-> ⚠️ 前任交接說「53 全過」其實是假綠燈：jsdom 24 沒實作 `File.text()`，`02-storage-backup` 的匯入 4 條一直 FAIL。
-> 已在該檔的 `beforeParse` 補上 `FileReader` polyfill（只動測試、沒動產品），現在匯入 round-trip 真的測得到。
+> jsdom 沒實作 `File.text()`，所以 `02-storage-backup` 在 `beforeParse` 補了 `FileReader` polyfill（只在測試裡）。別拿掉，否則匯入那 4 條會失敗。
 
 後端 `functions/*` 目前**沒有自動化測試**（需要 Cloudflare Workers + D1 執行環境，jsdom 測不到）。
 本機驗證請用 `npm run dev` 手動走註冊/登入/同步/衝突。這是已知缺口，之後值得補 integration test。
@@ -205,12 +204,10 @@ npm test   # 依編號依序跑 tests/01 ~ tests/06
 
 **下一步優先做**
 
-1. ✅ ~~反向測驗（看中文拼英文）~~ 已做，見複習模組的「看中文 → 拼英文」
-2. ✅ ~~複習連續天數 / 統計圖表~~ 已做，見複習模組頂部學習儀表板
-3. 補後端 integration test（`wrangler pages dev` + 打 API 驗證註冊/登入/樂觀鎖）
-4. 聽力題支援語速調整與逐句重播
-5. 匯出成 Anki apkg 或 CSV，讓使用者不被這個站綁死
-6. 反向測驗可再加「搭配詞克漏字」「同義字改寫」——`VocabItem` 已存 `collocations` / `synonyms`，資料現成
+1. 補後端 integration test（`wrangler pages dev` + 打 API 驗證註冊/登入/樂觀鎖）
+2. 聽力題支援語速調整與逐句重播
+3. 匯出成 Anki apkg 或 CSV，讓使用者不被這個站綁死
+4. 反向測驗可再加「搭配詞克漏字」「同義字改寫」——`VocabItem` 已存 `collocations` / `synonyms`，資料現成
 
 ## 給使用者的操作提醒
 
